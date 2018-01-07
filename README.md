@@ -1,6 +1,6 @@
 # Abstract Tree Iterators [Prototype]
 
-By extending the abstract classes presented in this project, you can manipulate trees in functional fashion.
+By extending the abstract classes presented in this project, you can manipulate trees a in functional fashion.
 
 ## Example:
 
@@ -12,7 +12,7 @@ Node root = createTree();
 
 MyTreeIterator.of(root)
         .forall(node -> node.isRed() && node.isValueEven())
-        .modify(node -> node.setValue(node.getValue() * 2))
+        .modify(node -> node.setValue(n -> n * 2))
         .forall(node -> node.isYellow() && node.getValue() > 15)
         .modify(node -> node.setColor(Node.Color.GREEN))
         .forall("/a/b/.*") // regex for path
@@ -21,6 +21,9 @@ MyTreeIterator.of(root)
 ``` 
 
 <img src='https://github.com/ifillbrito/trees/blob/master/tree-iterator/src/test/java/com/ifillbrito/trees/example/impl/singletype/output/tree.png?raw=true' width='550px'/>
+
+For further examples take a look at the unit tests:
+https://github.com/ifillbrito/trees/tree/master/tree-iterator/src/test/java/com/ifillbrito/trees/iterator
 
 ## License
 
