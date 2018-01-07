@@ -1,0 +1,13 @@
+<root name="person">
+    <child name="name" mandatory="true" value="Bob"/>
+    <child name="lastName" mandatory="true" value="Smith"/>
+    <container name="contactInformation">
+        <container name="phone-numbers">
+            <child name="home" value="111-1111"/>
+            <child name="mobile" value="222-2222"/>
+            <child name="work" value="333-3333"/>
+        </container>
+        <child name="city" value="Frankfurt"/>
+        <child name="email" value="email@email.com"/>
+    </container>
+</root>

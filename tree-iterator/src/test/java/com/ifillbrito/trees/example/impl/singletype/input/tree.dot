@@ -1,0 +1,24 @@
+digraph tree {
+     a -> b;
+     b -> e;
+     b -> f;
+
+     a -> c;
+     c -> g;
+     c -> h;
+     c -> i;
+
+     a -> d;
+     d -> j;
+
+     a [shape=box, label=10, color=yellow];
+     b [shape=box, label=02, color=red];
+     c [shape=box, label=88, color=red];
+     d [shape=box, label=12, color=green];
+     e [shape=box, label=85, color=red];
+     f [shape=box, label=05, color=green];
+     g [shape=box, label=15, color=red];
+     h [shape=box, label=07, color=green];
+     i [shape=box, label=17, color=yellow];
+     j [shape=box, label=18, color=red];
+}
