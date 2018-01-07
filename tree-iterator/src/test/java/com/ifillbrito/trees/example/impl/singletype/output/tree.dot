@@ -11,14 +11,14 @@ digraph tree {
      a -> d;
      d -> j;
 
-     a [shape=box, label=10, color=yellow];
-     b [shape=box, label=04, color=red];
-     c [shape=box, label=176, color=red];
-     d [shape=box, label=12, color=green];
-     e [shape=box, label=85, color=yellow];
-     f [shape=box, label=05, color=yellow];
-     g [shape=box, label=15, color=red];
-     h [shape=box, label=07, color=green];
-     i [shape=box, label=17, color=green];
-     j [shape=box, label=36, color=red];
+     a [shape=box, label="a: 10", color=yellow];
+     b [shape=box, label="b: 04", color=red];
+     c [shape=box, label="c: 176", color=red];
+     d [shape=box, label="d: 12", color=green];
+     e [shape=box, label="e: 85", color=yellow];
+     f [shape=box, label="f: 05", color=yellow];
+     g [shape=box, label="g: 15", color=red];
+     h [shape=box, label="h: 07", color=green];
+     i [shape=box, label="i: 17", color=green];
+     j [shape=box, label="j: 36", color=red];
 }
