@@ -5,7 +5,7 @@ By extending the abstract classes presented in this project, you can manipulate 
 ## Example:
 
 ### Input:
-![Input](https://github.com/ifillbrito/trees/blob/master/tree-iterator/src/test/java/com/ifillbrito/trees/example/impl/singletype/input/tree.png?raw=true)
+<img src='https://github.com/ifillbrito/trees/blob/master/tree-iterator/src/test/java/com/ifillbrito/trees/example/impl/singletype/input/tree.png?raw=true' width='550px'/>
 
 ```java
 Node root = createTree();
@@ -15,11 +15,12 @@ MyTreeIterator.of(root)
         .modify(node -> node.setValue(node.getValue() * 2))
         .forall(node -> node.isYellow() && node.getValue() > 15)
         .modify(node -> node.setColor(Node.Color.GREEN))
-        .forall("/a/b/.*")
+        .forall("/a/b/.*") // regex for path
         .modify(node -> node.setColor(Node.Color.YELLOW))
         .execute();
 ``` 
-![Output](https://github.com/ifillbrito/trees/blob/master/tree-iterator/src/test/java/com/ifillbrito/trees/example/impl/singletype/output/tree.png?raw=true)
+
+<img src='https://github.com/ifillbrito/trees/blob/master/tree-iterator/src/test/java/com/ifillbrito/trees/example/impl/singletype/output/tree.png?raw=true' width='550px'/>
 
 ## License
 
