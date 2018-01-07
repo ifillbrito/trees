@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by gjib on 07.01.18.
@@ -73,7 +73,7 @@ public class AbstractSingleTypePathAwareTreeIteratorTest
         // when
         ExampleSingleTypePathAwareTreeIterator.of(inputRoot)
                 .forall(node -> node.isRed() && node.isValueEven())
-                .modify(node -> node.setValue(node.getValue() * 2))
+                .modify(node -> node.setValue(n -> n * 2))
                 .forall(node -> node.isYellow() && node.getValue() > 15)
                 .modify(node -> node.setColor(Node.Color.GREEN))
                 .forall("/a/b/.*")
