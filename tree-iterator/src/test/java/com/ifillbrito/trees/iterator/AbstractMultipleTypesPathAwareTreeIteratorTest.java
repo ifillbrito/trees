@@ -167,7 +167,7 @@ public class AbstractMultipleTypesPathAwareTreeIteratorTest
         // when
         ExampleMultipleTypesPathAwareTreeIterator.of(root)
                 .forall(Child.class, child -> child.getName().matches("(name|lastName)"))
-                .skipItem()
+                .skipOne()
                 .forall(Child.class)
                 .remove()
                 .execute();
@@ -189,7 +189,7 @@ public class AbstractMultipleTypesPathAwareTreeIteratorTest
         // when
         ExampleMultipleTypesPathAwareTreeIterator.of(root)
                 .forall(Container.class, child -> child.getName().equals("contactInformation"))
-                .skipTree()
+                .skipAll()
                 .forall(Child.class)
                 .remove()
                 .execute();

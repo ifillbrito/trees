@@ -18,9 +18,9 @@ public interface Operation<Argument, Result>
 
     Result remove();
 
-    Result skipTree();
+    Result skipAll();
 
-    Result skipItem();
+    Result skipOne();
 
     <ListOrSet extends Collection<Argument>> ListOrSet collect(Supplier<ListOrSet> collectionSupplier);
 

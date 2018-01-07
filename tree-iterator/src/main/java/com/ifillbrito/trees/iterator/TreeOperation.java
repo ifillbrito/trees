@@ -4,9 +4,6 @@ import com.ifillbrito.common.function.OneArgSupplier;
 import com.ifillbrito.common.operation.Operation;
 import com.ifillbrito.common.operation.OperationArguments;
 import com.ifillbrito.common.operation.OperationType;
-import com.ifillbrito.trees.iterator.AbstractTreeIterator;
-import com.ifillbrito.trees.iterator.TreeIterator;
-import com.sun.org.apache.xpath.internal.Arg;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -52,14 +49,14 @@ public class TreeOperation<Argument, Iterator extends TreeIterator> implements O
     }
 
     @Override
-    public Iterator skipTree()
+    public Iterator skipAll()
     {
         operationArguments.getLast().setOperationType(OperationType.SKIP_TREE);
         return (Iterator) treeIterator;
     }
 
     @Override
-    public Iterator skipItem()
+    public Iterator skipOne()
     {
         operationArguments.getLast().setOperationType(OperationType.SKIP_ITEM);
         return (Iterator) treeIterator;
