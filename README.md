@@ -4,6 +4,9 @@ By extending the abstract classes presented in this project, you can manipulate 
 
 ## Example:
 
+### Input:
+![Input](https://github.com/ifillbrito/trees/blob/master/tree-iterator/src/test/java/com/ifillbrito/trees/example/impl/singletype/input/tree.png?raw=true)
+
 ```java
 Node root = createTree();
 
@@ -16,6 +19,7 @@ MyTreeIterator.of(root)
         .modify(node -> node.setColor(Node.Color.YELLOW))
         .execute();
 ``` 
+![Output](https://github.com/ifillbrito/trees/blob/master/tree-iterator/src/test/java/com/ifillbrito/trees/example/impl/singletype/output/tree.png?raw=true)
 
 ## License
 
