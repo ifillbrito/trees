@@ -22,7 +22,7 @@ MyTreeIterator.of(root)
 
 <img src='https://github.com/ifillbrito/trees/blob/master/tree-iterator/src/test/java/com/ifillbrito/trees/example/impl/singletype/output/tree.png?raw=true' width='550px'/>
 
-For further examples take a look at the <a src='https://github.com/ifillbrito/trees/tree/master/tree-iterator/src/test/java/com/ifillbrito/trees/iterator'>unit tests</a>:
+For further examples take a look at the <a href='https://github.com/ifillbrito/trees/tree/master/tree-iterator/src/test/java/com/ifillbrito/trees/iterator'>unit tests</a>:
 
 ## License
 
