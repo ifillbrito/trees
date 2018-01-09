@@ -11,18 +11,18 @@ By extending the abstract classes presented in this project, you can manipulate 
 Node root = createTree();
 
 MyTreeIterator.of(root)
-        .forall(node -> node.isRed() && node.isValueEven())
-        .modify(node -> node.setValue(n -> n * 2))
-        .forall(node -> node.isYellow() && node.getValue() > 15)
-        .modify(node -> node.setColor(Node.Color.GREEN))
-        .forall("/a/b/.*") // regex for path
-        .modify(node -> node.setColor(Node.Color.YELLOW))
-        .execute();
+    .when(node -> node.isRed() && node.isValueEven())
+    .modify(node -> node.setValue(n -> n * 2))
+    .when(node -> node.isYellow() && node.getValue() > 15)
+    .modify(node -> node.setColor(Node.Color.GREEN))
+    .when("/a/b/.*")
+    .modify(node -> node.setColor(Node.Color.YELLOW))
+    .execute();
 ``` 
 
 <img src='https://github.com/ifillbrito/trees/blob/master/tree-iterator/src/test/java/com/ifillbrito/trees/example/impl/singletype/output/tree.png?raw=true' width='550px'/>
 
-For further examples take a look at the <a href='https://github.com/ifillbrito/trees/tree/master/tree-iterator/src/test/java/com/ifillbrito/trees/iterator'>unit tests</a>:
+For further examples take a look at the <a href='https://github.com/ifillbrito/trees/tree/master/tree-iterator/src/test/java/com/ifillbrito/trees/iterator'>unit tests</a>.
 
 ## License
 
