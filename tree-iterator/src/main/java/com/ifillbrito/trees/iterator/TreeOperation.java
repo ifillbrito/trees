@@ -51,14 +51,14 @@ public class TreeOperation<Argument, Iterator extends TreeIterator> implements O
     @Override
     public Iterator skipAll()
     {
-        operationArguments.getLast().setOperationType(OperationType.SKIP_TREE);
+        operationArguments.getLast().setOperationType(OperationType.SKIP_ALL);
         return (Iterator) treeIterator;
     }
 
     @Override
     public Iterator skipOne()
     {
-        operationArguments.getLast().setOperationType(OperationType.SKIP_ITEM);
+        operationArguments.getLast().setOperationType(OperationType.SKIP_ONE);
         return (Iterator) treeIterator;
     }
 

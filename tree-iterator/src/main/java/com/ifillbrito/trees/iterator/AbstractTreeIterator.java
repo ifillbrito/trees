@@ -147,12 +147,12 @@ public abstract class AbstractTreeIterator<Root, RecursionStepObject, Iterator e
 
     private boolean isTreeSkipped(Object object, OperationArguments currentOperationArguments)
     {
-        return isRegisteredBeforeCurrentOperation(OperationType.SKIP_TREE, object, currentOperationArguments);
+        return isRegisteredBeforeCurrentOperation(OperationType.SKIP_ALL, object, currentOperationArguments);
     }
 
     private boolean isItemSkipped(Object object, OperationArguments currentOperationArguments)
     {
-        return isRegisteredBeforeCurrentOperation(OperationType.SKIP_ITEM, object, currentOperationArguments);
+        return isRegisteredBeforeCurrentOperation(OperationType.SKIP_ONE, object, currentOperationArguments);
     }
 
     private boolean isRegisteredBeforeCurrentOperation(OperationType operationType, Object object, OperationArguments currentOperationArguments)
