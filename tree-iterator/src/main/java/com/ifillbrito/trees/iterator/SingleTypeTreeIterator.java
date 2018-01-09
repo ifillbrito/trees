@@ -9,11 +9,11 @@ import java.util.function.Predicate;
  */
 public interface SingleTypeTreeIterator<Root> extends TreeIterator<Root>
 {
-    Operation<Root, SingleTypeTreeIterator<Root>> forall();
+    Operation<Root, SingleTypeTreeIterator<Root>> when();
 
-    Operation<Root, SingleTypeTreeIterator<Root>> forall(Predicate<Root> precondition);
+    Operation<Root, SingleTypeTreeIterator<Root>> when(Predicate<Root> precondition);
 
-    Operation<Root, SingleTypeTreeIterator<Root>> forall(String pathRegex);
+    Operation<Root, SingleTypeTreeIterator<Root>> when(String pathRegex);
 
-    Operation<Root, SingleTypeTreeIterator<Root>> forall(Predicate<Root> precondition, String pathRegex);
+    Operation<Root, SingleTypeTreeIterator<Root>> when(Predicate<Root> precondition, String pathRegex);
 }

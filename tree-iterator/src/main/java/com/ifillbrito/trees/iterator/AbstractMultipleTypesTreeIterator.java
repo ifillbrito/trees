@@ -17,27 +17,27 @@ public abstract class AbstractMultipleTypesTreeIterator<Root>
     }
 
     @Override
-    public <Type> TreeOperation<Type, MultipleTypesTreeIterator<Type>> forall(Class<Type> classType)
+    public <Type> TreeOperation<Type, MultipleTypesTreeIterator<Type>> when(Class<Type> classType)
     {
-        return this.forall(classType, x -> true);
+        return this.when(classType, x -> true);
     }
 
     @Override
-    public <Type> TreeOperation<Type, MultipleTypesTreeIterator<Type>> forall(Class<Type> classType, Predicate<Type> precondition)
+    public <Type> TreeOperation<Type, MultipleTypesTreeIterator<Type>> when(Class<Type> classType, Predicate<Type> precondition)
     {
         operationArguments.add(OperationArguments.create(classType, precondition));
         return new TreeOperation<>((MultipleTypesTreeIterator<Type>) this, operationArguments);
     }
 
     @Override
-    public <Type> TreeOperation<Type, MultipleTypesTreeIterator<Type>> forall(Class<Type> classType, String pathRegex)
+    public <Type> TreeOperation<Type, MultipleTypesTreeIterator<Type>> when(Class<Type> classType, String pathRegex)
     {
         operationArguments.add(OperationArguments.create(classType, pathRegex));
         return new TreeOperation<>((MultipleTypesTreeIterator<Type>) this, operationArguments);
     }
 
     @Override
-    public <Type> TreeOperation<Type, MultipleTypesTreeIterator<Type>> forall(Class<Type> classType, Predicate<Type> precondition, String pathRegex)
+    public <Type> TreeOperation<Type, MultipleTypesTreeIterator<Type>> when(Class<Type> classType, Predicate<Type> precondition, String pathRegex)
     {
         operationArguments.add(OperationArguments.create(classType, precondition, pathRegex));
         return new TreeOperation<>((MultipleTypesTreeIterator<Type>) this, operationArguments);

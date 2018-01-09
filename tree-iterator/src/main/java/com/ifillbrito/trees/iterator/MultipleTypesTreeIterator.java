@@ -9,11 +9,11 @@ import java.util.function.Predicate;
  */
 public interface MultipleTypesTreeIterator<Root> extends TreeIterator<Root>
 {
-    <Type> Operation<Type, MultipleTypesTreeIterator<Type>> forall(Class<Type> classType);
+    <Type> Operation<Type, MultipleTypesTreeIterator<Type>> when(Class<Type> classType);
 
-    <Type> Operation<Type, MultipleTypesTreeIterator<Type>> forall(Class<Type> classType, Predicate<Type> precondition);
+    <Type> Operation<Type, MultipleTypesTreeIterator<Type>> when(Class<Type> classType, Predicate<Type> precondition);
 
-    <Type> Operation<Type, MultipleTypesTreeIterator<Type>> forall(Class<Type> classType, String pathRegex);
+    <Type> Operation<Type, MultipleTypesTreeIterator<Type>> when(Class<Type> classType, String pathRegex);
 
-    <Type> Operation<Type, MultipleTypesTreeIterator<Type>> forall(Class<Type> classType, Predicate<Type> precondition, String pathRegex);
+    <Type> Operation<Type, MultipleTypesTreeIterator<Type>> when(Class<Type> classType, Predicate<Type> precondition, String pathRegex);
 }

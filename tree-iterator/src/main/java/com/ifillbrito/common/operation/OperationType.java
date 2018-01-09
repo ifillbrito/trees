@@ -8,8 +8,8 @@ public enum OperationType
     MODIFY,
     REPLACE,
     REMOVE,
-    SKIP_ALL,
-    SKIP_ONE,
+    SKIP,
+    IGNORE,
     COLLECT_AS_LIST,
     COLLECT_AS_MAP,
     GROUP

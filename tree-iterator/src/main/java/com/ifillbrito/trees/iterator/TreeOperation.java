@@ -1,6 +1,5 @@
 package com.ifillbrito.trees.iterator;
 
-import com.ifillbrito.common.function.OneArgSupplier;
 import com.ifillbrito.common.operation.Operation;
 import com.ifillbrito.common.operation.OperationArguments;
 import com.ifillbrito.common.operation.OperationType;
@@ -9,6 +8,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -34,9 +34,9 @@ public class TreeOperation<Argument, Iterator extends TreeIterator> implements O
     }
 
     @Override
-    public Iterator replace(OneArgSupplier<Argument, ?> supplier)
+    public Iterator replace(Function<Argument, ?> function)
     {
-        operationArguments.getLast().setSupplier(supplier);
+        operationArguments.getLast().setFunction(function);
         operationArguments.getLast().setOperationType(OperationType.REPLACE);
         return (Iterator) treeIterator;
     }
@@ -49,16 +49,16 @@ public class TreeOperation<Argument, Iterator extends TreeIterator> implements O
     }
 
     @Override
-    public Iterator skipAll()
+    public Iterator skip()
     {
-        operationArguments.getLast().setOperationType(OperationType.SKIP_ALL);
+        operationArguments.getLast().setOperationType(OperationType.SKIP);
         return (Iterator) treeIterator;
     }
 
     @Override
-    public Iterator skipOne()
+    public Iterator ignore()
     {
-        operationArguments.getLast().setOperationType(OperationType.SKIP_ONE);
+        operationArguments.getLast().setOperationType(OperationType.IGNORE);
         return (Iterator) treeIterator;
     }
 
@@ -76,12 +76,12 @@ public class TreeOperation<Argument, Iterator extends TreeIterator> implements O
 
     @Override
     public <Key, Value extends Argument> Map<Key, Value> collect(
-            OneArgSupplier<Argument, Key> keySupplier,
+            Function<Argument, Key> keySupplier,
             Supplier<Map<Key, Value>> mapSupplier)
     {
         operationArguments.getLast().setOperationType(OperationType.COLLECT_AS_MAP);
         treeIterator.setMap(mapSupplier.get());
-        treeIterator.setMapKeySupplier(keySupplier);
+        treeIterator.setMapKeyFunction(keySupplier);
         treeIterator.execute();
         Map<Key, Value> result = mapSupplier.get();
         result.putAll(treeIterator.getMap());
@@ -92,14 +92,14 @@ public class TreeOperation<Argument, Iterator extends TreeIterator> implements O
 
     @Override
     public <Key, ListOrSet extends Collection<Argument>> Map<Key, ListOrSet> group(
-            OneArgSupplier<Argument, Key> keySupplier,
+            Function<Argument, Key> keySupplier,
             Supplier<ListOrSet> collectionSupplier,
             Supplier<Map<Key, ListOrSet>> mapSupplier)
     {
         operationArguments.getLast().setOperationType(OperationType.GROUP);
         treeIterator.setCollectionSupplier( collectionSupplier);
         treeIterator.setMap(mapSupplier.get());
-        treeIterator.setMapKeySupplier(keySupplier);
+        treeIterator.setMapKeyFunction(keySupplier);
         treeIterator.execute();
         Map<Key, ListOrSet> result = mapSupplier.get();
         result.putAll(treeIterator.getMap());

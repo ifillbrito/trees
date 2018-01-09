@@ -1,9 +1,8 @@
 package com.ifillbrito.trees.example.impl.singletype;
 
-import com.ifillbrito.common.function.OneArgSupplier;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Created by gjib on 07.01.18.
@@ -36,9 +35,9 @@ public class Node
         return this;
     }
 
-    public Node setValue(OneArgSupplier<Integer, Integer> function)
+    public Node setValue(Function<Integer, Integer> function)
     {
-        this.value = function.get(value);
+        this.value = function.apply(value);
         return this;
     }
 

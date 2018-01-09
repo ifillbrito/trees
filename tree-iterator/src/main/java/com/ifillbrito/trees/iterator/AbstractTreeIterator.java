@@ -1,6 +1,5 @@
 package com.ifillbrito.trees.iterator;
 
-import com.ifillbrito.common.function.OneArgSupplier;
 import com.ifillbrito.common.operation.OperationArguments;
 import com.ifillbrito.common.operation.OperationType;
 
@@ -8,6 +7,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -27,7 +27,7 @@ public abstract class AbstractTreeIterator<Root, RecursionStepObject, Iterator e
     // data holders
     private Collection collection;
     private Map map;
-    private OneArgSupplier mapKeySupplier;
+    private Function mapKeyFunction;
     private Supplier collectionSupplier;
     private String currentPath = "";
 
@@ -53,9 +53,9 @@ public abstract class AbstractTreeIterator<Root, RecursionStepObject, Iterator e
         return this;
     }
 
-    public AbstractTreeIterator setMapKeySupplier(OneArgSupplier mapKeySupplier)
+    public AbstractTreeIterator setMapKeyFunction(Function mapKeyFunction)
     {
-        this.mapKeySupplier = mapKeySupplier;
+        this.mapKeyFunction = mapKeyFunction;
         return this;
     }
 
@@ -68,7 +68,7 @@ public abstract class AbstractTreeIterator<Root, RecursionStepObject, Iterator e
     public void resetDataHolders()
     {
         this.map = null;
-        this.mapKeySupplier = null;
+        this.mapKeyFunction = null;
         this.collectionSupplier = null;
     }
 
@@ -117,7 +117,7 @@ public abstract class AbstractTreeIterator<Root, RecursionStepObject, Iterator e
                             operationArguments.getConsumer().accept(object);
                             break;
                         case REPLACE:
-                            listIterator.set(operationArguments.getSupplier().get(object));
+                            listIterator.set(operationArguments.getFunction().apply(object));
                             break;
                         case REMOVE:
                             listIterator.remove();
@@ -126,11 +126,11 @@ public abstract class AbstractTreeIterator<Root, RecursionStepObject, Iterator e
                             collection.add(object);
                             break;
                         case COLLECT_AS_MAP:
-                            map.put(mapKeySupplier.get(object), object);
+                            map.put(mapKeyFunction.apply(object), object);
                             break;
                         case GROUP:
-                            map.putIfAbsent(mapKeySupplier.get(object), collectionSupplier.get());
-                            Collection collection = (Collection) map.get(mapKeySupplier.get(object));
+                            map.putIfAbsent(mapKeyFunction.apply(object), collectionSupplier.get());
+                            Collection collection = (Collection) map.get(mapKeyFunction.apply(object));
                             collection.add(object);
                             break;
                     }
@@ -147,12 +147,12 @@ public abstract class AbstractTreeIterator<Root, RecursionStepObject, Iterator e
 
     private boolean isTreeSkipped(Object object, OperationArguments currentOperationArguments)
     {
-        return isRegisteredBeforeCurrentOperation(OperationType.SKIP_ALL, object, currentOperationArguments);
+        return isRegisteredBeforeCurrentOperation(OperationType.SKIP, object, currentOperationArguments);
     }
 
     private boolean isItemSkipped(Object object, OperationArguments currentOperationArguments)
     {
-        return isRegisteredBeforeCurrentOperation(OperationType.SKIP_ONE, object, currentOperationArguments);
+        return isRegisteredBeforeCurrentOperation(OperationType.IGNORE, object, currentOperationArguments);
     }
 
     private boolean isRegisteredBeforeCurrentOperation(OperationType operationType, Object object, OperationArguments currentOperationArguments)

@@ -21,7 +21,7 @@ public class AbstractSingleTypePathAwareTreeIteratorTest
 
         // when
         List<Node> list = ExampleSingleTypePathAwareTreeIterator.of(inputRoot)
-                .forall()
+                .when()
                 .collect(ArrayList::new);
 
         // then
@@ -36,7 +36,7 @@ public class AbstractSingleTypePathAwareTreeIteratorTest
 
         // when
         Map<String, Node> map = ExampleSingleTypePathAwareTreeIterator.of(inputRoot)
-                .forall()
+                .when()
                 .collect(Node::getName, HashMap::new);
 
         // then
@@ -51,7 +51,7 @@ public class AbstractSingleTypePathAwareTreeIteratorTest
 
         // when
         Map<Node.Color, List<Node>> map = ExampleSingleTypePathAwareTreeIterator.of(inputRoot)
-                .forall()
+                .when()
                 .group(Node::getColor, ArrayList::new, HashMap::new);
 
         // then
@@ -72,17 +72,17 @@ public class AbstractSingleTypePathAwareTreeIteratorTest
 
         // when
         ExampleSingleTypePathAwareTreeIterator.of(inputRoot)
-                .forall(node -> node.isRed() && node.isValueEven())
+                .when(node -> node.isRed() && node.isValueEven())
                 .modify(node -> node.setValue(n -> n * 2))
-                .forall(node -> node.isYellow() && node.getValue() > 15)
+                .when(node -> node.isYellow() && node.getValue() > 15)
                 .modify(node -> node.setColor(Node.Color.GREEN))
-                .forall("/a/b/.*")
+                .when("/a/b/.*")
                 .modify(node -> node.setColor(Node.Color.YELLOW))
                 .execute();
 
         // then
         Map<Node.Color, List<Node>> map = ExampleSingleTypePathAwareTreeIterator.of(inputRoot)
-                .forall()
+                .when()
                 .group(Node::getColor, ArrayList::new, HashMap::new);
 
         assertEquals(3, map.get(Node.Color.YELLOW).size());

@@ -1,8 +1,7 @@
 package com.ifillbrito.common.operation;
 
-import com.ifillbrito.common.function.OneArgSupplier;
-
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -12,7 +11,7 @@ public class OperationArguments<Type>
 {
     private Predicate<Type> precondition;
     private Consumer<Type> consumer;
-    private OneArgSupplier<Type, ?> supplier;
+    private Function<Type, ?> function;
     private OperationType operationType;
     private Class<Type> classType;
     private String pathRegex;
@@ -71,14 +70,14 @@ public class OperationArguments<Type>
         this.consumer = consumer;
     }
 
-    public OneArgSupplier<Type, ?> getSupplier()
+    public Function<Type, ?> getFunction()
     {
-        return supplier;
+        return function;
     }
 
-    public void setSupplier(OneArgSupplier<Type, ?> supplier)
+    public void setFunction(Function<Type, ?> function)
     {
-        this.supplier = supplier;
+        this.function = function;
     }
 
     public OperationType getOperationType()

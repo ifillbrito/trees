@@ -18,27 +18,27 @@ public abstract class AbstractSingleTypeTreeIterator<Node>
     }
 
     @Override
-    public Operation<Node, SingleTypeTreeIterator<Node>> forall()
+    public Operation<Node, SingleTypeTreeIterator<Node>> when()
     {
-        return this.forall(x -> true);
+        return this.when(x -> true);
     }
 
     @Override
-    public Operation<Node, SingleTypeTreeIterator<Node>> forall(Predicate<Node> precondition)
+    public Operation<Node, SingleTypeTreeIterator<Node>> when(Predicate<Node> precondition)
     {
         operationArguments.add(OperationArguments.create((Class<Node>) root.getClass(), precondition));
         return new TreeOperation<>(this, operationArguments);
     }
 
     @Override
-    public Operation<Node, SingleTypeTreeIterator<Node>> forall(String pathRegex)
+    public Operation<Node, SingleTypeTreeIterator<Node>> when(String pathRegex)
     {
         operationArguments.add(OperationArguments.create(root.getClass(), pathRegex));
         return new TreeOperation<>(this, operationArguments);
     }
 
     @Override
-    public Operation<Node, SingleTypeTreeIterator<Node>> forall(Predicate<Node> precondition, String pathRegex)
+    public Operation<Node, SingleTypeTreeIterator<Node>> when(Predicate<Node> precondition, String pathRegex)
     {
         operationArguments.add(OperationArguments.create((Class<Node>) root.getClass(), precondition, pathRegex));
         return new TreeOperation<>(this, operationArguments);

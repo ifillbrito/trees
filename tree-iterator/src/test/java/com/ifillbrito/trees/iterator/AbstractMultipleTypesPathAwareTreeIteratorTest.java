@@ -20,7 +20,7 @@ public class AbstractMultipleTypesPathAwareTreeIteratorTest
 
         // when
         List<Child> children = ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Child.class)
+                .when(Child.class)
                 .collect(ArrayList::new);
 
         // then
@@ -35,7 +35,7 @@ public class AbstractMultipleTypesPathAwareTreeIteratorTest
 
         // when
         Map<String, Child> map = ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Child.class)
+                .when(Child.class)
                 .collect(Child::getName, HashMap::new);
 
         // then
@@ -56,7 +56,7 @@ public class AbstractMultipleTypesPathAwareTreeIteratorTest
 
         // when
         Map<Class<? extends Element>, List<Object>> map = ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Object.class)
+                .when(Object.class)
                 .group(this::getClass, ArrayList::new, HashMap::new);
 
         // then
@@ -81,13 +81,13 @@ public class AbstractMultipleTypesPathAwareTreeIteratorTest
 
         // when
         ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Child.class, Child::isMandatory)
+                .when(Child.class, Child::isMandatory)
                 .modify(child -> child.setMandatory(false))
                 .execute();
 
         // then
         ArrayList<Child> children = ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Child.class)
+                .when(Child.class)
                 .collect(ArrayList::new);
 
         children.forEach(child -> assertFalse(child.isMandatory()));
@@ -101,7 +101,7 @@ public class AbstractMultipleTypesPathAwareTreeIteratorTest
 
         // when
         ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Child.class, child -> child.getName().equals("name"))
+                .when(Child.class, child -> child.getName().equals("name"))
                 .replace(child ->
                         new Container()
                                 .addChild(child)
@@ -111,7 +111,7 @@ public class AbstractMultipleTypesPathAwareTreeIteratorTest
 
         // then
         Map<Class<? extends Element>, List<Object>> map = ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Object.class)
+                .when(Object.class)
                 .group(this::getClass, ArrayList::new, HashMap::new);
 
         // check number of roots children and containers
@@ -122,7 +122,7 @@ public class AbstractMultipleTypesPathAwareTreeIteratorTest
 
         // check that the container exists and that the name is in it
         ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Container.class, container -> "newContainer".equals(container.getName()))
+                .when(Container.class, container -> "newContainer".equals(container.getName()))
                 .collect(ArrayList::new)
                 .stream()
                 .map(container -> (Child) container.getChildren().get(0))
@@ -137,13 +137,13 @@ public class AbstractMultipleTypesPathAwareTreeIteratorTest
 
         // when
         ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Child.class, Child::isMandatory)
+                .when(Child.class, Child::isMandatory)
                 .remove()
                 .execute();
 
         // then
         Map<Class<? extends Element>, List<Object>> map = ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Object.class)
+                .when(Object.class)
                 .group(this::getClass, ArrayList::new, HashMap::new);
 
         // check number of roots children and containers
@@ -159,44 +159,44 @@ public class AbstractMultipleTypesPathAwareTreeIteratorTest
     }
 
     @Test
-    public void skipItem_children()
+    public void ignore_children()
     {
         // given
         Root root = createTree();
 
         // when
         ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Child.class, child -> child.getName().matches("(name|lastName)"))
-                .skipOne()
-                .forall(Child.class)
+                .when(Child.class, child -> child.getName().matches("(name|lastName)"))
+                .ignore()
+                .when(Child.class)
                 .remove()
                 .execute();
 
         // then
         Map<Class<? extends Element>, List<Object>> map = ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Object.class)
+                .when(Object.class)
                 .group(this::getClass, ArrayList::new, HashMap::new);
 
         assertEquals(2, map.get(Child.class).size());
     }
 
     @Test
-    public void skipTree_container()
+    public void skip_container()
     {
         // given
         Root root = createTree();
 
         // when
         ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Container.class, child -> child.getName().equals("contactInformation"))
-                .skipAll()
-                .forall(Child.class)
+                .when(Container.class, child -> child.getName().equals("contactInformation"))
+                .skip()
+                .when(Child.class)
                 .remove()
                 .execute();
 
         // then
         Map<Class<? extends Element>, List<Object>> map = ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Object.class)
+                .when(Object.class)
                 .group(this::getClass, ArrayList::new, HashMap::new);
 
         assertEquals(5, map.get(Child.class).size());
@@ -210,13 +210,13 @@ public class AbstractMultipleTypesPathAwareTreeIteratorTest
 
         // when
         ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Child.class, "/person/contactInformation/phone.*")
+                .when(Child.class, "/person/contactInformation/phone.*")
                 .modify(child -> child.setMandatory(true))
                 .execute();
 
         // then
         List<Child> children = ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Child.class, "/person/contactInformation/phone.*")
+                .when(Child.class, "/person/contactInformation/phone.*")
                 .collect(ArrayList::new);
 
         assertEquals(3, children.size());
@@ -231,7 +231,7 @@ public class AbstractMultipleTypesPathAwareTreeIteratorTest
 
         // when
         ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Child.class,
+                .when(Child.class,
                         child -> "111-1111".equals(child.getValue()),
                         "/person/contactInformation/phone.*")
                 .modify(child -> child.setMandatory(true))
@@ -239,7 +239,7 @@ public class AbstractMultipleTypesPathAwareTreeIteratorTest
 
         // then
         List<Child> children = ExampleMultipleTypesPathAwareTreeIterator.of(root)
-                .forall(Child.class, "/person/contactInformation/phone.*")
+                .when(Child.class, "/person/contactInformation/phone.*")
                 .collect(ArrayList::new);
 
         assertEquals(3, children.size());
