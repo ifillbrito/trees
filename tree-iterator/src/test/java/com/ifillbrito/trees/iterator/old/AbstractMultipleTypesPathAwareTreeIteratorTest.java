@@ -1,6 +1,7 @@
-package com.ifillbrito.trees.iterator;
+package com.ifillbrito.trees.iterator.old;
 
 import com.ifillbrito.trees.example.impl.multipletype.*;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.*;
@@ -126,7 +127,7 @@ public class AbstractMultipleTypesPathAwareTreeIteratorTest
                 .collect(ArrayList::new)
                 .stream()
                 .map(container -> (Child) container.getChildren().get(0))
-                .forEach(child -> assertEquals("name", child.getName()));
+                .forEach(child -> Assert.assertEquals("name", child.getName()));
     }
 
     @Test

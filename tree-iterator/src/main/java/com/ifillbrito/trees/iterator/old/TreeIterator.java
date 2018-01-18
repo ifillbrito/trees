@@ -1,4 +1,4 @@
-package com.ifillbrito.trees.iterator;
+package com.ifillbrito.trees.iterator.old;
 
 /**
  * Created by gjib on 07.01.18.

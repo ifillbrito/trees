@@ -1,4 +1,4 @@
-package com.ifillbrito.trees.iterator;
+package com.ifillbrito.trees.iterator.old;
 
 import com.ifillbrito.trees.example.impl.singletype.ExampleSingleTypePathAwareTreeIterator;
 import com.ifillbrito.trees.example.impl.singletype.Node;

@@ -1,6 +1,6 @@
 package com.ifillbrito.trees.example.impl.singletype;
 
-import com.ifillbrito.trees.iterator.AbstractSingleTypePathAwareTreeIterator;
+import com.ifillbrito.trees.iterator.old.AbstractSingleTypePathAwareTreeIterator;
 
 import java.util.Arrays;
 import java.util.ListIterator;

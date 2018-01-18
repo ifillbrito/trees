@@ -1,19 +1,42 @@
 package com.ifillbrito.trees.iterator;
 
-import com.ifillbrito.common.operation.Operation;
-
-import java.util.function.Predicate;
+import java.util.Collection;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
- * Created by gjib on 07.01.18.
+ * Created by gjib on 17.01.18.
  */
-public interface SingleTypeTreeIterator<Root> extends TreeIterator<Root>
+public interface SingleTypeTreeIterator<Root>
 {
-    Operation<Root, SingleTypeTreeIterator<Root>> when();
+    <Item, Cond extends Condition<Root, CollectOperation<Root, Cond>>> Cond collect(Collection<Item> collection);
 
-    Operation<Root, SingleTypeTreeIterator<Root>> when(Predicate<Root> precondition);
+    <Key, Root, Cond extends Condition<Root, CollectOperation<Root, Cond>>> Cond collect(
+            Map<Key, Root> map,
+            Function<Root, Key> keySupplier
+    );
 
-    Operation<Root, SingleTypeTreeIterator<Root>> when(String pathRegex);
+    <Key, Value, Cond extends Condition<Root, CollectOperation<Root, Cond>>> Cond collect(
+            Map<Key, Value> map,
+            Function<Root, Key> keySupplier,
+            Function<Root, Value> valueTransformer
+    );
 
-    Operation<Root, SingleTypeTreeIterator<Root>> when(Predicate<Root> precondition, String pathRegex);
+    <Key, Item, ListOrSet extends Collection<Item>, Cond extends Condition<Root, CollectOperation<Root, Cond>>> Cond group(
+            Map<Key, ListOrSet> map,
+            Function<Root, Key> keySupplier,
+            Supplier<ListOrSet> listSupplier
+    );
+
+    <Key, Item, ListOrSet extends Collection<Item>, Cond extends Condition<Root, CollectOperation<Root, Cond>>> Cond group(
+            Map<Key, ListOrSet> map,
+            Function<Root, Key> keySupplier,
+            Function<Root, Item> valueTransformer,
+            Supplier<ListOrSet> listSupplier
+    );
+
+    <Cond extends Condition<Root, EditOperation<Root, Cond>>> Cond edit();
+
+    void execute();
 }

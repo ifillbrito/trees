@@ -1,6 +1,6 @@
 package com.ifillbrito.trees.example.impl.multipletype;
 
-import com.ifillbrito.trees.iterator.AbstractMultipleTypesPathAwareTreeIterator;
+import com.ifillbrito.trees.iterator.old.AbstractMultipleTypesPathAwareTreeIterator;
 
 import java.util.Arrays;
 import java.util.ListIterator;
