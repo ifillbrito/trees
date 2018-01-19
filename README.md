@@ -12,7 +12,7 @@ Map<String, Node.Color> colorMap = new HashMap<>();
 Map<Node.Color, Set<Node>> nodesByColorMap = new HashMap<>();
 Map<Node.Color, Set<String>> nodeNamesByColorMap = new HashMap<>();
 
-MyTypeTreeIterator.of(inputRoot)
+MyTreeIterator.of(inputRoot)
         // modify (or just do something with the nodes), replace them, or remove them
         .edit()
             .forall(node -> node.isRed() && node.isValueEven())
