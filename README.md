@@ -5,7 +5,7 @@ After the implementation has been done, this project will provide abstract class
 ## Example:
 
 ```java
-Node inputRoot = Node.create("a", 10, Node.Color.YELLOW);
+Node inputRoot = createTree();
 List<Node> collection = new ArrayList<>();
 Map<String, Node> leafsMap = new HashMap<>();
 Map<String, Node.Color> colorMap = new HashMap<>();
