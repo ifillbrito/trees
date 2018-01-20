@@ -11,7 +11,7 @@ import java.util.*;
 public class TreeIteratorTest
 {
     @Test
-    public void test()
+    public void api_example_only()
     {
         //@formatter:off
         Node inputRoot = createNode();
@@ -22,7 +22,8 @@ public class TreeIteratorTest
         Map<Node.Color, Set<String>> nodeNamesByColorMap = new HashMap<>();
 
         MyTreeIterator.of(inputRoot)
-                // declare globally the nodes that must be considered
+                // configure the iteration:
+                // execution order; filtered, ignored and/or skipped nodes
                 .iterate()
                     .topDownExecution()
                     .forAll(Node::isLeaf)
@@ -31,6 +32,7 @@ public class TreeIteratorTest
                     .forAll(node -> node.getParent() == null)
                     .ignore()
                     .end()
+
                 // modify (or just do something with the nodes), replace them, or remove them
                 .edit()
                     .forAll(node -> node.isRed() && node.isValueEven())
@@ -40,11 +42,13 @@ public class TreeIteratorTest
                     .forPath("/a/b/.*")
                     .remove()
                     .end()
-                // collect in list
+
+                // list of nodes
                 .collect(collection)
                     .forPath("/a/b/[a-z]^")
                     .skip()
                     .end()
+
                 // node map by name
                 .collect(leafsMap, Node::getName)
                     .forAll(Node::isLeaf)
@@ -52,38 +56,52 @@ public class TreeIteratorTest
                     .bottomUpExecution()
                     .filter()
                     .end()
+
                 // node color map by name
                 .collect(colorMap, Node::getName, Node::getColor)
                     .forAll(Node::isLeaf)
                     .filter()
                     .end()
+
                 // group nodes by color
                 .group(nodesByColorMap, Node::getColor, HashSet::new)
                     .forAll()
                     .take(2,4)
                     .filter()
                     .end()
+
                 // group nodes by color
                 .group(nodeNamesByColorMap, Node::getColor, Node::getName, HashSet::new)
-                    .forAll((node, path) -> true) // some condition
+                    // node-path condition
+                    .forAll((node, path) -> true)
                     .takeOccurrence(4)
                     .filter()
-                    .forAll((node, parent, path) -> true) // some condition
+                    // node-parent-path condition
+                    .forAll((node, parent, path) -> true)
                     .ignore()
                     .end()
-                // work with a wrapper that contains parent and path
-                .resolveParents()
+
+                // Wrappers: Useful if a reference to the parent, grandparent, etc is needed.
                 .edit()
-                    .forAll(node -> node.getParent() == null || node.getPath() == null)
-                    .apply(node -> node.getParent().getParent().getParent().getNode())
-                    .end()
-                .use(Node.class)
-                .edit()
+                    // work with a node wrapper in the next statement
+                    // the wrapper contains: object, parent, path
                     .resolveParents()
                     .forAll(node -> node.getParent() == null)
                     .resolveParents()
                     .apply(node -> node.getParent().setNode(node))
                     .end()
+
+                // work with a node wrapper for all coming operations
+                // the wrapper contains: object, parent, path
+                .resolveParents()
+                .edit()
+                    .forAll(node -> node.getParent() == null || node.getPath() == null)
+                    .apply(node -> node.getParent().getParent().getParent().getNode())
+                    .end()
+
+                // define the class to be used for the next operations
+                // it can be used to disable wrapper, or to avoid
+                // "xyz instance of SomeObject" conditions
                 .use(Node.class)
                 .edit()
                     .forAll(Node::isRed)
