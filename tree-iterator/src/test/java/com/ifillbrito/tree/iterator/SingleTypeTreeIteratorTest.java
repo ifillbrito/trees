@@ -67,7 +67,12 @@ public class SingleTypeTreeIteratorTest
                 // work with a wrapper that contains parent and path
                 .resolveMetaData()
                 .edit()
-                    .forPath("")
+                    .forAll(node -> node.getParent() == null || node.getPath() == null)
+                    .apply(node -> node.getParent().getParent().getParent().getObject())
+                    .end()
+                .edit()
+                    .resolveMetaData()
+                    .forAll(node -> node.getParent() == null)
                     .remove()
                     .end()
                 .execute();

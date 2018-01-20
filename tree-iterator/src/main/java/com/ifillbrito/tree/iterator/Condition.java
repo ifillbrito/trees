@@ -19,5 +19,5 @@ public interface Condition<Root, Operation extends BaseOperation> extends NodeCo
 
     Operation forPath(Predicate<String> precondition);
 
-    NodeCondition<NodeWrapper<Root, Root>, Operation> resolveMetaData();
+    NodeCondition<NodeWrapper<Root>, Operation> resolveMetaData();
 }

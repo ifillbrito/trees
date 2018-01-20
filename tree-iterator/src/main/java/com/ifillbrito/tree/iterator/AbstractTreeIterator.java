@@ -19,7 +19,6 @@ public class AbstractTreeIterator<Root> implements SingleTypeTreeIterator<Root>
         this.root = root;
     }
 
-
     @Override
     public <Item, Cond extends Condition<Root, CollectOperation<Root, Cond>>> Cond collect(Collection<Item> collection)
     {
@@ -63,7 +62,7 @@ public class AbstractTreeIterator<Root> implements SingleTypeTreeIterator<Root>
     }
 
     @Override
-    public SingleTypeTreeIterator<NodeWrapper<Root, Root>> resolveMetaData()
+    public SingleTypeMetaDataAwareTreeIterator<NodeWrapper<Root>> resolveMetaData()
     {
         return null;
     }

@@ -44,7 +44,7 @@ public interface SingleTypeTreeIterator<Root>
 
     <Cond extends Condition<Root, EditOperation<Root, Cond>>> Cond edit();
 
-    SingleTypeTreeIterator<NodeWrapper<Root, Root>> resolveMetaData();
+    SingleTypeMetaDataAwareTreeIterator<NodeWrapper<Root>> resolveMetaData();
 
     void execute();
 }
