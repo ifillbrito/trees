@@ -8,7 +8,7 @@ import java.util.*;
 /**
  * Created by gjib on 18.01.18.
  */
-public class SingleTypeTreeIteratorTest
+public class TreeIteratorTest
 {
     @Test
     public void test()
@@ -21,7 +21,7 @@ public class SingleTypeTreeIteratorTest
         Map<Node.Color, Set<Node>> nodesByColorMap = new HashMap<>();
         Map<Node.Color, Set<String>> nodeNamesByColorMap = new HashMap<>();
 
-        MyTypeTreeIterator.of(inputRoot)
+        MyTreeIterator.of(inputRoot)
                 // declare globally the nodes that must be considered
                 .traverse()
                     .forAll(Node::isLeaf)
@@ -65,14 +65,20 @@ public class SingleTypeTreeIteratorTest
                     .filter()
                     .end()
                 // work with a wrapper that contains parent and path
-                .resolveMetaData()
+                .wrapNodes()
                 .edit()
-                    .forAll(node -> node.getParent() == null || node.getPath() == null)
-                    .apply(node -> node.getParent().getParent().getParent().getObject())
+                    .forAll(wrappedNode -> wrappedNode.getParent() == null || wrappedNode.getPath() == null)
+                    .apply(wrappedNode -> wrappedNode.getParent().getParent().getParent().getNode())
                     .end()
+                .unwrapNodes(Node.class)
                 .edit()
-                    .resolveMetaData()
+                    .wrapNodes()
                     .forAll(node -> node.getParent() == null)
+                    .remove()
+                    .end()
+                .unwrapNodes(Node.class)
+                .edit()
+                    .forAll(node -> node.isRed())
                     .remove()
                     .end()
                 .execute();

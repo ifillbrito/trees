@@ -1,6 +1,6 @@
 package com.ifillbrito.tree.iterator;
 
-import com.ifillbrito.tree.node.NodeWrapper;
+import com.ifillbrito.tree.node.NodeMeta;
 
 import java.util.Collection;
 import java.util.Map;
@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 /**
  * Created by gjib on 17.01.18.
  */
-public interface SingleTypeTreeIterator<Root>
+public interface TreeIterator<Root>
 {
     <Item, Cond extends Condition<Root, CollectOperation<Root, Cond>>> Cond collect(
             Collection<Item> collection
@@ -44,7 +44,9 @@ public interface SingleTypeTreeIterator<Root>
 
     <Cond extends Condition<Root, EditOperation<Root, Cond>>> Cond edit();
 
-    SingleTypeMetaDataAwareTreeIterator<NodeWrapper<Root>> resolveMetaData();
+    TreeIterator<NodeMeta<Root>> wrapNodes();
+
+    <T> TreeIterator<T> unwrapNodes(Class<T> type);
 
     void execute();
 }

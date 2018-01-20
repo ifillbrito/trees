@@ -11,5 +11,5 @@ public interface NodeCondition<Node, Operation extends BaseOperation>
 
     Operation forAll(Predicate<Node> precondition);
 
-    SingleTypeTreeIterator<Node> end();
+    TreeIterator<Node> end();
 }

@@ -1,7 +1,7 @@
 package com.ifillbrito.tree.iterator;
 
 import com.ifillbrito.common.function.TriPredicate;
-import com.ifillbrito.tree.node.NodeWrapper;
+import com.ifillbrito.tree.node.NodeMeta;
 
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
@@ -19,5 +19,5 @@ public interface Condition<Root, Operation extends BaseOperation> extends NodeCo
 
     Operation forPath(Predicate<String> precondition);
 
-    NodeCondition<NodeWrapper<Root>, Operation> resolveMetaData();
+    NodeCondition<NodeMeta<Root>, Operation> wrapNodes();
 }

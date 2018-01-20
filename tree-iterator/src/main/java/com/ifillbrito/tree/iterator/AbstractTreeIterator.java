@@ -1,6 +1,6 @@
 package com.ifillbrito.tree.iterator;
 
-import com.ifillbrito.tree.node.NodeWrapper;
+import com.ifillbrito.tree.node.NodeMeta;
 
 import java.util.Collection;
 import java.util.Map;
@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 /**
  * Created by gjib on 18.01.18.
  */
-public class AbstractTreeIterator<Root> implements SingleTypeTreeIterator<Root>
+public class AbstractTreeIterator<Root> implements TreeIterator<Root>
 {
     private Root root;
 
@@ -62,7 +62,13 @@ public class AbstractTreeIterator<Root> implements SingleTypeTreeIterator<Root>
     }
 
     @Override
-    public SingleTypeMetaDataAwareTreeIterator<NodeWrapper<Root>> resolveMetaData()
+    public TreeIterator<NodeMeta<Root>> wrapNodes()
+    {
+        return null;
+    }
+
+    @Override
+    public <T> TreeIterator<T> unwrapNodes(Class<T> type)
     {
         return null;
     }
