@@ -1,28 +1,54 @@
 # Abstract Tree Iterators [Prototype]
 
-By extending the abstract classes presented in this project, you can manipulate trees a in functional fashion.
+After the implementation has been done, this project will provide abstract classes that can be used to manipulate trees in a functional fashion.
 
 ## Example:
 
-### Input:
-<img src='https://github.com/ifillbrito/trees/blob/master/tree-iterator/src/test/java/com/ifillbrito/trees/example/impl/singletype/input/tree.png?raw=true' width='550px'/>
-
 ```java
-Node root = createTree();
+Node inputRoot = createTree();
+List<Node> collection = new ArrayList<>();
+Map<String, Node> leafsMap = new HashMap<>();
+Map<String, Node.Color> colorMap = new HashMap<>();
+Map<Node.Color, Set<Node>> nodesByColorMap = new HashMap<>();
+Map<Node.Color, Set<String>> nodeNamesByColorMap = new HashMap<>();
 
-MyTreeIterator.of(root)
-    .when(node -> node.isRed() && node.isValueEven())
-    .modify(node -> node.setValue(n -> n * 2))
-    .when(node -> node.isYellow() && node.getValue() > 15)
-    .modify(node -> node.setColor(Node.Color.GREEN))
-    .when("/a/b/.*")
-    .modify(node -> node.setColor(Node.Color.YELLOW))
-    .execute();
+MyTreeIterator.of(inputRoot)
+        // modify (or just do something with the nodes), replace them, or remove them
+        .edit()
+            .forall(node -> node.isRed() && node.isValueEven())
+            .apply(node -> node.setValue(n -> n * 2))
+            .forall(node -> node.isYellow() && node.getValue() > 15)
+            .replace(node -> Node.create("z", 20, Node.Color.RED))
+            .forPath("/a/b/.*")
+            .remove()
+        .end()
+        // collect in list
+        .collect(collection)
+            .forPath("/a/b")
+            .skip()
+        .end()
+        // node map by name
+        .collect(leafsMap, Node::getName)
+            .forall(Node::isLeaf)
+            .add()
+        .end()
+        // node color map by name
+        .collect(colorMap, Node::getName, Node::getColor)
+            .forall(Node::isLeaf)
+            .add()
+        .end()
+        // group nodes by color
+        .group(nodesByColorMap, Node::getColor, HashSet::new)
+            .forall()
+            .add()
+        .end()
+        // group nodes by color
+        .group(nodeNamesByColorMap, Node::getColor, Node::getName, HashSet::new)
+            .forall((node, path) -> true) // some condition
+            .add()
+        .end()
+        .execute();
 ``` 
-
-<img src='https://github.com/ifillbrito/trees/blob/master/tree-iterator/src/test/java/com/ifillbrito/trees/example/impl/singletype/output/tree.png?raw=true' width='550px'/>
-
-For further examples take a look at the <a href='https://github.com/ifillbrito/trees/tree/master/tree-iterator/src/test/java/com/ifillbrito/trees/iterator'>unit tests</a>.
 
 ## License
 
