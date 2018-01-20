@@ -24,6 +24,7 @@ public class TreeIteratorTest
         MyTreeIterator.of(inputRoot)
                 // declare globally the nodes that must be considered
                 .iterate()
+                    .topDownExecution()
                     .forAll(Node::isLeaf)
                     .filter(4)
                     .resolveParents()
@@ -41,13 +42,14 @@ public class TreeIteratorTest
                     .end()
                 // collect in list
                 .collect(collection)
-                    .forPath("/a/b")
+                    .forPath("/a/b/[a-z]^")
                     .skip()
                     .end()
                 // node map by name
                 .collect(leafsMap, Node::getName)
                     .forAll(Node::isLeaf)
                     .take(3)
+                    .bottomUpExecution()
                     .filter()
                     .end()
                 // node color map by name
@@ -66,6 +68,8 @@ public class TreeIteratorTest
                     .forAll((node, path) -> true) // some condition
                     .takeOccurrence(4)
                     .filter()
+                    .forAll((node, parent, path) -> true) // some condition
+                    .ignore()
                     .end()
                 // work with a wrapper that contains parent and path
                 .resolveParents()

@@ -19,5 +19,9 @@ public interface OperationPrecondition<Root, Operation extends BaseOperation> ex
 
     Operation forPath(Predicate<String> precondition);
 
+    OperationPrecondition<Root, Operation> topDownExecution();
+
+    OperationPrecondition<Root, Operation> bottomUpExecution();
+
     BaseOperationPrecondition<NodeMeta<Root>, Operation> resolveParents();
 }

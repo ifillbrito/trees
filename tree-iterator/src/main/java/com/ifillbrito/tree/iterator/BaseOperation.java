@@ -52,4 +52,8 @@ public interface BaseOperation<Precondition extends BaseOperationPrecondition, O
     Operation takeLast(int maxCount);
 
     Operation takeOccurrence(int occurrence);
+
+    Operation bottomUpExecution();
+
+    Operation topDownExecution();
 }
