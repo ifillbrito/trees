@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 /**
  * Created by gjib on 18.01.18.
  */
-public interface Condition<Root, Operation extends BaseOperation> extends NodeCondition<Root, Operation>
+public interface OperationPrecondition<Root, Operation extends BaseOperation> extends BaseOperationPrecondition<Root, Operation>
 {
     Operation forAll(BiPredicate<Root, String> precondition);
 
@@ -19,5 +19,5 @@ public interface Condition<Root, Operation extends BaseOperation> extends NodeCo
 
     Operation forPath(Predicate<String> precondition);
 
-    NodeCondition<NodeMeta<Root>, Operation> wrapNodes();
+    BaseOperationPrecondition<NodeMeta<Root>, Operation> resolveParents();
 }

@@ -3,44 +3,44 @@ package com.ifillbrito.tree.iterator;
 /**
  * Created by gjib on 17.01.18.
  */
-public interface BaseOperation<Cond extends NodeCondition, Operation extends BaseOperation>
+public interface BaseOperation<Precondition extends BaseOperationPrecondition, Operation extends BaseOperation>
 {
     // The following methods affect the recursive iteration within the corresponding scope
-    Cond skip();
+    Precondition skip();
 
-    Cond skip(int maxCount);
+    Precondition skip(int maxCount);
 
-    Cond skip(int occurrenceFrom, int occurrenceTo);
+    Precondition skip(int occurrenceFrom, int occurrenceTo);
 
-    Cond skipLast();
+    Precondition skipLast();
 
-    Cond skipLast(int maxCount);
+    Precondition skipLast(int maxCount);
 
-    Cond skipOccurrence(int occurrence);
+    Precondition skipOccurrence(int occurrence);
 
-    Cond ignore();
+    Precondition ignore();
 
-    Cond ignore(int maxCount);
+    Precondition ignore(int maxCount);
 
-    Cond ignore(int occurrenceFrom, int occurrenceTo);
+    Precondition ignore(int occurrenceFrom, int occurrenceTo);
 
-    Cond ignoreLast();
+    Precondition ignoreLast();
 
-    Cond ignoreLast(int maxCount);
+    Precondition ignoreLast(int maxCount);
 
-    Cond ignoreOccurrence(int occurrence);
+    Precondition ignoreOccurrence(int occurrence);
 
-    Cond filter();
+    Precondition filter();
 
-    Cond filter(int maxCount);
+    Precondition filter(int maxCount);
 
-    Cond filter(int occurrenceFrom, int occurrenceTo);
+    Precondition filter(int occurrenceFrom, int occurrenceTo);
 
-    Cond filterLast();
+    Precondition filterLast();
 
-    Cond filterLast(int maxCount);
+    Precondition filterLast(int maxCount);
 
-    Cond filterOccurrence(int occurrence);
+    Precondition filterOccurrence(int occurrence);
 
     // The following methods only affect the next operation
     Operation take(int maxCount);

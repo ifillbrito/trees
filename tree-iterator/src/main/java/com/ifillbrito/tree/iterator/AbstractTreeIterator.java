@@ -19,56 +19,57 @@ public class AbstractTreeIterator<Root> implements TreeIterator<Root>
         this.root = root;
     }
 
+
     @Override
-    public <Item, Cond extends Condition<Root, CollectOperation<Root, Cond>>> Cond collect(Collection<Item> collection)
+    public <Item, Precondition extends OperationPrecondition<Root, CollectOperation<Root, Precondition>>> Precondition collect(Collection<Item> collection)
     {
         return null;
     }
 
     @Override
-    public <Key, Cond extends Condition<Root, CollectOperation<Root, Cond>>> Cond collect(Map<Key, Root> map, Function<Root, Key> keySupplier)
+    public <Key, Precondition extends OperationPrecondition<Root, CollectOperation<Root, Precondition>>> Precondition collect(Map<Key, Root> map, Function<Root, Key> keySupplier)
     {
         return null;
     }
 
     @Override
-    public <Key, Value, Cond extends Condition<Root, CollectOperation<Root, Cond>>> Cond collect(Map<Key, Value> map, Function<Root, Key> keySupplier, Function<Root, Value> valueTransformer)
+    public <Key, Value, Precondition extends OperationPrecondition<Root, CollectOperation<Root, Precondition>>> Precondition collect(Map<Key, Value> map, Function<Root, Key> keySupplier, Function<Root, Value> valueTransformer)
     {
         return null;
     }
 
     @Override
-    public <Key, Item, ListOrSet extends Collection<Item>, Cond extends Condition<Root, CollectOperation<Root, Cond>>> Cond group(Map<Key, ListOrSet> map, Function<Root, Key> keySupplier, Supplier<ListOrSet> listSupplier)
+    public <Key, Item, ListOrSet extends Collection<Item>, Precondition extends OperationPrecondition<Root, CollectOperation<Root, Precondition>>> Precondition group(Map<Key, ListOrSet> map, Function<Root, Key> keySupplier, Supplier<ListOrSet> listSupplier)
     {
         return null;
     }
 
     @Override
-    public <Key, Item, ListOrSet extends Collection<Item>, Cond extends Condition<Root, CollectOperation<Root, Cond>>> Cond group(Map<Key, ListOrSet> map, Function<Root, Key> keySupplier, Function<Root, Item> valueTransformer, Supplier<ListOrSet> listSupplier)
+    public <Key, Item, ListOrSet extends Collection<Item>, Precondition extends OperationPrecondition<Root, CollectOperation<Root, Precondition>>> Precondition group(Map<Key, ListOrSet> map, Function<Root, Key> keySupplier, Function<Root, Item> valueTransformer, Supplier<ListOrSet> listSupplier)
     {
         return null;
     }
 
     @Override
-    public <Cond extends Condition<Root, BaseOperation<Cond, BaseOperation>>> Cond traverse()
+    public <Precondition extends OperationPrecondition<Root, BaseOperation<Precondition, BaseOperation>>> Precondition iterate()
     {
         return null;
     }
 
     @Override
-    public <Cond extends Condition<Root, EditOperation<Root, Cond>>> Cond edit()
+    public <Precondition extends OperationPrecondition<Root, EditOperation<Root, Precondition>>> Precondition edit()
     {
         return null;
     }
 
     @Override
-    public TreeIterator<NodeMeta<Root>> wrapNodes()
+    public TreeIterator<NodeMeta<Root>> resolveParents()
     {
         return null;
     }
 
     @Override
-    public <T> TreeIterator<T> unwrapNodes(Class<T> type)
+    public <T> TreeIterator<T> use(Class<T> type)
     {
         return null;
     }

@@ -12,41 +12,41 @@ import java.util.function.Supplier;
  */
 public interface TreeIterator<Root>
 {
-    <Item, Cond extends Condition<Root, CollectOperation<Root, Cond>>> Cond collect(
+    <Item, Precondition extends OperationPrecondition<Root, CollectOperation<Root, Precondition>>> Precondition collect(
             Collection<Item> collection
     );
 
-    <Key, Cond extends Condition<Root, CollectOperation<Root, Cond>>> Cond collect(
+    <Key, Precondition extends OperationPrecondition<Root, CollectOperation<Root, Precondition>>> Precondition collect(
             Map<Key, Root> map,
             Function<Root, Key> keySupplier
     );
 
-    <Key, Value, Cond extends Condition<Root, CollectOperation<Root, Cond>>> Cond collect(
+    <Key, Value, Precondition extends OperationPrecondition<Root, CollectOperation<Root, Precondition>>> Precondition collect(
             Map<Key, Value> map,
             Function<Root, Key> keySupplier,
             Function<Root, Value> valueTransformer
     );
 
-    <Key, Item, ListOrSet extends Collection<Item>, Cond extends Condition<Root, CollectOperation<Root, Cond>>> Cond group(
+    <Key, Item, ListOrSet extends Collection<Item>, Precondition extends OperationPrecondition<Root, CollectOperation<Root, Precondition>>> Precondition group(
             Map<Key, ListOrSet> map,
             Function<Root, Key> keySupplier,
             Supplier<ListOrSet> listSupplier
     );
 
-    <Key, Item, ListOrSet extends Collection<Item>, Cond extends Condition<Root, CollectOperation<Root, Cond>>> Cond group(
+    <Key, Item, ListOrSet extends Collection<Item>, Precondition extends OperationPrecondition<Root, CollectOperation<Root, Precondition>>> Precondition group(
             Map<Key, ListOrSet> map,
             Function<Root, Key> keySupplier,
             Function<Root, Item> valueTransformer,
             Supplier<ListOrSet> listSupplier
     );
 
-    <Cond extends Condition<Root, BaseOperation<Cond, BaseOperation>>> Cond traverse();
+    <Precondition extends OperationPrecondition<Root, BaseOperation<Precondition, BaseOperation>>> Precondition iterate();
 
-    <Cond extends Condition<Root, EditOperation<Root, Cond>>> Cond edit();
+    <Precondition extends OperationPrecondition<Root, EditOperation<Root, Precondition>>> Precondition edit();
 
-    TreeIterator<NodeMeta<Root>> wrapNodes();
+    TreeIterator<NodeMeta<Root>> resolveParents();
 
-    <T> TreeIterator<T> unwrapNodes(Class<T> type);
+    <T> TreeIterator<T> use(Class<T> type);
 
     void execute();
 }
