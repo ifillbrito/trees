@@ -86,7 +86,7 @@ public class TreeIteratorTest
                     .end()
                 .use(Node.class)
                 .edit()
-                    .forAll(node -> node.isRed())
+                    .forAll(Node::isRed)
                     .remove()
                     .end()
                 .execute();

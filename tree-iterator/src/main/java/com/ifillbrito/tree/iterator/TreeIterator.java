@@ -10,41 +10,41 @@ import java.util.function.Supplier;
 /**
  * Created by gjib on 17.01.18.
  */
-public interface TreeIterator<Root>
+public interface TreeIterator<Node>
 {
-    <Item, Precondition extends OperationPrecondition<Root, CollectOperation<Root, Precondition>>> Precondition collect(
+    <Item, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>>> Precondition collect(
             Collection<Item> collection
     );
 
-    <Key, Precondition extends OperationPrecondition<Root, CollectOperation<Root, Precondition>>> Precondition collect(
-            Map<Key, Root> map,
-            Function<Root, Key> keySupplier
+    <Key, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>>> Precondition collect(
+            Map<Key, Node> map,
+            Function<Node, Key> keySupplier
     );
 
-    <Key, Value, Precondition extends OperationPrecondition<Root, CollectOperation<Root, Precondition>>> Precondition collect(
+    <Key, Value, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>>> Precondition collect(
             Map<Key, Value> map,
-            Function<Root, Key> keySupplier,
-            Function<Root, Value> valueTransformer
+            Function<Node, Key> keySupplier,
+            Function<Node, Value> valueTransformer
     );
 
-    <Key, Item, ListOrSet extends Collection<Item>, Precondition extends OperationPrecondition<Root, CollectOperation<Root, Precondition>>> Precondition group(
+    <Key, Item, ListOrSet extends Collection<Item>, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>>> Precondition group(
             Map<Key, ListOrSet> map,
-            Function<Root, Key> keySupplier,
+            Function<Node, Key> keySupplier,
             Supplier<ListOrSet> listSupplier
     );
 
-    <Key, Item, ListOrSet extends Collection<Item>, Precondition extends OperationPrecondition<Root, CollectOperation<Root, Precondition>>> Precondition group(
+    <Key, Item, ListOrSet extends Collection<Item>, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>>> Precondition group(
             Map<Key, ListOrSet> map,
-            Function<Root, Key> keySupplier,
-            Function<Root, Item> valueTransformer,
+            Function<Node, Key> keySupplier,
+            Function<Node, Item> valueTransformer,
             Supplier<ListOrSet> listSupplier
     );
 
-    <Precondition extends OperationPrecondition<Root, BaseOperation<Precondition, BaseOperation>>> Precondition iterate();
+    <Precondition extends OperationPrecondition<Node, BaseOperation<Precondition, BaseOperation>>> Precondition iterate();
 
-    <Precondition extends OperationPrecondition<Root, EditOperation<Root, Precondition>>> Precondition edit();
+    <Precondition extends OperationPrecondition<Node, EditOperation<Node, Precondition>>> Precondition edit();
 
-    TreeIterator<NodeMeta<Root>> resolveParents();
+    TreeIterator<NodeMeta<Node>> resolveParents();
 
     <T> TreeIterator<T> use(Class<T> type);
 

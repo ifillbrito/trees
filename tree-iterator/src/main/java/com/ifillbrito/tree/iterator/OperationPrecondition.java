@@ -9,19 +9,19 @@ import java.util.function.Predicate;
 /**
  * Created by gjib on 18.01.18.
  */
-public interface OperationPrecondition<Root, Operation extends BaseOperation> extends BaseOperationPrecondition<Root, Operation>
+public interface OperationPrecondition<Node, Operation extends BaseOperation> extends BaseOperationPrecondition<Node, Operation>
 {
-    Operation forAll(BiPredicate<Root, String> precondition);
+    Operation forAll(BiPredicate<Node, String> precondition);
 
-    Operation forAll(TriPredicate<Root, Root, String> precondition);
+    Operation forAll(TriPredicate<Node, Node, String> precondition);
 
     Operation forPath(String pathRegex);
 
     Operation forPath(Predicate<String> precondition);
 
-    OperationPrecondition<Root, Operation> topDownExecution();
+    OperationPrecondition<Node, Operation> topDownExecution();
 
-    OperationPrecondition<Root, Operation> bottomUpExecution();
+    OperationPrecondition<Node, Operation> bottomUpExecution();
 
-    BaseOperationPrecondition<NodeMeta<Root>, Operation> resolveParents();
+    BaseOperationPrecondition<NodeMeta<Node>, Operation> resolveParents();
 }
