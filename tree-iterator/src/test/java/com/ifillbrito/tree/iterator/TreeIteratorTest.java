@@ -14,7 +14,7 @@ public class TreeIteratorTest
     public void test()
     {
         //@formatter:off
-        Node inputRoot = Node.create("a", 10, Node.Color.YELLOW);
+        Node inputRoot = createNode();
         List<Node> collection = new ArrayList<>();
         Map<String, Node> leafsMap = new HashMap<>();
         Map<String, Node.Color> colorMap = new HashMap<>();
@@ -91,5 +91,10 @@ public class TreeIteratorTest
                     .end()
                 .execute();
         //@formatter:on
+    }
+
+    private Node createNode()
+    {
+        return Node.create("a", 10, Node.Color.YELLOW);
     }
 }
