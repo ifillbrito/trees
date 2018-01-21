@@ -1,4 +1,4 @@
-# Abstract Tree Iterators [Prototype]
+# Fluent Tree Iterator API [Prototype]
 
 After the implementation has been done, this project will provide abstract classes that can be easily extended in order to manipulate trees in a functional fashion.
 
