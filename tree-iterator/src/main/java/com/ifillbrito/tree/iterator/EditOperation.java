@@ -1,6 +1,6 @@
 package com.ifillbrito.tree.iterator;
 
-import com.ifillbrito.tree.node.NodeMeta;
+import com.ifillbrito.tree.node.NodeWrapper;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -17,5 +17,5 @@ public interface EditOperation<Node, Precondition extends BaseOperationPrecondit
 
     Precondition remove();
 
-    EditOperation<NodeMeta<Node>, Precondition> resolveParents();
+    EditOperation<NodeWrapper<Node>, Precondition> resolveParents();
 }

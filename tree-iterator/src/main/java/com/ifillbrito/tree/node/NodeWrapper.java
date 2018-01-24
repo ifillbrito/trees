@@ -3,20 +3,20 @@ package com.ifillbrito.tree.node;
 /**
  * Created by gjib on 20.01.18.
  */
-public class NodeMeta<Type>
+public class NodeWrapper<Type>
 {
     private String path;
-    private NodeMeta parent;
+    private NodeWrapper parent;
     private Type node;
 
-    public NodeMeta(Type node)
+    public NodeWrapper(Type node)
     {
         this.node = node;
     }
 
-    public static <T> NodeMeta<T> of (T object)
+    public static <T> NodeWrapper<T> of (T object)
     {
-        return new NodeMeta<>(object);
+        return new NodeWrapper<>(object);
     }
 
     public String getPath()
@@ -24,18 +24,18 @@ public class NodeMeta<Type>
         return path;
     }
 
-    public NodeMeta<Type> setPath(String path)
+    public NodeWrapper<Type> setPath(String path)
     {
         this.path = path;
         return this;
     }
 
-    public NodeMeta getParent()
+    public NodeWrapper getParent()
     {
         return parent;
     }
 
-    public NodeMeta<Type> setParent(NodeMeta parent)
+    public NodeWrapper<Type> setParent(NodeWrapper parent)
     {
         this.parent = parent;
         return this;
@@ -46,7 +46,7 @@ public class NodeMeta<Type>
         return node;
     }
 
-    public NodeMeta<Type> setNode(Type node)
+    public NodeWrapper<Type> setNode(Type node)
     {
         this.node = node;
         return this;

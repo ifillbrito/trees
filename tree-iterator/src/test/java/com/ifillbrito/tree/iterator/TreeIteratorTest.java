@@ -27,10 +27,8 @@ public class TreeIteratorTest
                 .iterate()
                     .topDownExecution()
                     .forAll(Node::isLeaf)
-                    .filter(4)
-                    .resolveParents()
-                    .forAll(node -> node.getParent() == null)
-                    .ignore()
+                    .take(4)
+                    .filter()
                     .end()
 
                 // modify (or just do something with the nodes), replace them, or remove them
@@ -86,17 +84,17 @@ public class TreeIteratorTest
                     // work with a node wrapper in the next statement
                     // the wrapper contains: object, parent, path
                     .resolveParents()
-                    .forAll(node -> node.getParent() == null)
+                    .forAll(nodeWrapper -> nodeWrapper.getParent() == null)
                     .resolveParents()
                     .apply(node -> node.getParent().setNode(node))
                     .end()
 
-                // work with a node wrapper for all coming operations
+                // work with a node wrapper for all operations in edit()
                 // the wrapper contains: object, parent, path
                 .resolveParents()
                 .edit()
-                    .forAll(node -> node.getParent() == null || node.getPath() == null)
-                    .apply(node -> node.getParent().getParent().getParent().getNode())
+                    .forAll(nodeWrapper -> nodeWrapper.getParent() == null || nodeWrapper.getPath() == null)
+                    .apply(nodeWrapper -> nodeWrapper.getParent().getParent().getParent().getNode())
                     .end()
 
                 // define the class to be used for the next operations

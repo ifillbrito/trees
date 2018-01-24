@@ -1,6 +1,6 @@
 package com.ifillbrito.tree.iterator;
 
-import com.ifillbrito.tree.node.NodeMeta;
+import com.ifillbrito.tree.node.NodeWrapper;
 
 import java.util.Collection;
 import java.util.Map;
@@ -51,7 +51,7 @@ public class AbstractTreeIterator<Root> implements TreeIterator<Root>
     }
 
     @Override
-    public <Precondition extends OperationPrecondition<Root, BaseOperation<Precondition, BaseOperation>>> Precondition iterate()
+    public <Precondition extends OperationPrecondition<Root, IterateOperation<Root, Precondition>>> Precondition iterate()
     {
         return null;
     }
@@ -63,7 +63,7 @@ public class AbstractTreeIterator<Root> implements TreeIterator<Root>
     }
 
     @Override
-    public TreeIterator<NodeMeta<Root>> resolveParents()
+    public TreeIterator<NodeWrapper<Root>> resolveParents()
     {
         return null;
     }

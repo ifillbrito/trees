@@ -1,6 +1,6 @@
 package com.ifillbrito.tree.iterator;
 
-import com.ifillbrito.tree.node.NodeMeta;
+import com.ifillbrito.tree.node.NodeWrapper;
 
 import java.util.Collection;
 import java.util.Map;
@@ -40,11 +40,11 @@ public interface TreeIterator<Node>
             Supplier<ListOrSet> listSupplier
     );
 
-    <Precondition extends OperationPrecondition<Node, BaseOperation<Precondition, BaseOperation>>> Precondition iterate();
+    <Precondition extends OperationPrecondition<Node, IterateOperation<Node, Precondition>>> Precondition iterate();
 
     <Precondition extends OperationPrecondition<Node, EditOperation<Node, Precondition>>> Precondition edit();
 
-    TreeIterator<NodeMeta<Node>> resolveParents();
+    TreeIterator<NodeWrapper<Node>> resolveParents();
 
     <T> TreeIterator<T> use(Class<T> type);
 
