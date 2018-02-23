@@ -2,6 +2,8 @@
 
 After the implementation has been done, this project will provide abstract classes that can be easily extended in order to manipulate trees in a functional fashion.
 
+Designed by Eduard Beutel and Grebiel Ifill. The design pattern can be found at https://github.com/eduardbeutel/design-patterns.
+
 ## Example:
 The following example shows some of the methods of the API (still in development). The conditions (``forAll``, ``forPath``) and functions (lambdas) used to manipulate the nodes were written arbitrarily, so the semantic described in this example might not make any sense. The goal at the moment is to see how the API looks like.
 
