@@ -1,4 +1,4 @@
-package com.ifillbrito.common.operation;
+package com.github.ifillbrito.common.operation;
 
 import java.util.Collection;
 import java.util.Map;

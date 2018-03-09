@@ -1,6 +1,6 @@
-package com.ifillbrito.tree.iterator;
+package com.github.ifillbrito.tree.iterator;
 
-import com.ifillbrito.tree.node.NodeWrapper;
+import com.github.ifillbrito.tree.node.NodeWrapper;
 
 import java.util.Collection;
 import java.util.Map;

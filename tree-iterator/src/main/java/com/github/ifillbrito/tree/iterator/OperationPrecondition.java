@@ -1,7 +1,7 @@
-package com.ifillbrito.tree.iterator;
+package com.github.ifillbrito.tree.iterator;
 
-import com.ifillbrito.common.function.TriPredicate;
-import com.ifillbrito.tree.node.NodeWrapper;
+import com.github.ifillbrito.common.function.TriPredicate;
+import com.github.ifillbrito.tree.node.NodeWrapper;
 
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;

@@ -1,4 +1,4 @@
-package com.ifillbrito.common.operation;
+package com.github.ifillbrito.common.operation;
 
 /**
  * Created by gjib on 07.01.18.

@@ -1,4 +1,4 @@
-package com.ifillbrito.tree.node;
+package com.github.ifillbrito.tree.node;
 
 /**
  * Created by gjib on 20.01.18.

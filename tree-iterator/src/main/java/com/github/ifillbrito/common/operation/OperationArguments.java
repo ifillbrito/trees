@@ -1,4 +1,4 @@
-package com.ifillbrito.common.operation;
+package com.github.ifillbrito.common.operation;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

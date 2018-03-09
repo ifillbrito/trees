@@ -1,4 +1,4 @@
-package com.ifillbrito.tree.iterator;
+package com.github.ifillbrito.tree.iterator;
 
 import java.util.function.Predicate;
 

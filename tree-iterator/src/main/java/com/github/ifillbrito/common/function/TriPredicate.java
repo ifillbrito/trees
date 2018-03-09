@@ -1,4 +1,4 @@
-package com.ifillbrito.common.function;
+package com.github.ifillbrito.common.function;
 
 /**
  * Created by gjib on 20.01.18.
