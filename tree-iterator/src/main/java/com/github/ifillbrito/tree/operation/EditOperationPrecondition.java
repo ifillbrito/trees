@@ -1,4 +1,4 @@
-package com.github.ifillbrito.tree.iterator;
+package com.github.ifillbrito.tree.operation;
 
 import com.github.ifillbrito.common.function.TriPredicate;
 import com.github.ifillbrito.tree.node.NodeWrapper;
@@ -9,8 +9,8 @@ import java.util.function.Predicate;
 /**
  * Created by gjib on 18.01.18.
  */
-public interface OperationPrecondition<Node, Operation extends BaseOperation>
-        extends BaseOperationPrecondition<Node, Operation, OperationPrecondition<NodeWrapper<Node>, Operation>>
+public interface EditOperationPrecondition<Node, Operation extends BaseOperation>
+        extends BaseOperationPrecondition<Node, Operation, EditOperationPrecondition<NodeWrapper<Node>, Operation>>
 {
     Operation forAll(BiPredicate<Node, String> precondition);
 
@@ -20,7 +20,7 @@ public interface OperationPrecondition<Node, Operation extends BaseOperation>
 
     Operation forPath(Predicate<String> precondition);
 
-    OperationPrecondition<Node, Operation> topDownExecution();
+    EditOperationPrecondition<Node, Operation> topDownExecution();
 
-    OperationPrecondition<Node, Operation> bottomUpExecution();
+    EditOperationPrecondition<Node, Operation> bottomUpExecution();
 }

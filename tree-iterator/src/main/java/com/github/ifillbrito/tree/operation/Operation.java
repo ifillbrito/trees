@@ -1,9 +1,9 @@
-package com.github.ifillbrito.common.operation;
+package com.github.ifillbrito.tree.operation;
 
 /**
  * Created by gjib on 07.01.18.
  */
-public enum OperationType
+public enum Operation
 {
     MODIFY,
     REPLACE,

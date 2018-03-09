@@ -1,4 +1,6 @@
-package com.github.ifillbrito.tree.iterator;
+package com.github.ifillbrito.tree.operation;
+
+import com.github.ifillbrito.tree.iterator.TreeIterator;
 
 import java.util.function.Predicate;
 

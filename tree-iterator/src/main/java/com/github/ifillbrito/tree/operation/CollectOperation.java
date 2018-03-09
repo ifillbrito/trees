@@ -1,4 +1,4 @@
-package com.github.ifillbrito.tree.iterator;
+package com.github.ifillbrito.tree.operation;
 
 /**
  * Created by gjib on 17.01.18.

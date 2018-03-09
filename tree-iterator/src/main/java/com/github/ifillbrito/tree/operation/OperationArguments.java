@@ -1,4 +1,4 @@
-package com.github.ifillbrito.common.operation;
+package com.github.ifillbrito.tree.operation;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -9,45 +9,33 @@ import java.util.function.Predicate;
  */
 public class OperationArguments<Type>
 {
+    private String scope;
+    private OperationType operationType;
     private Predicate<Type> precondition;
     private Consumer<Type> consumer;
     private Function<Type, ?> function;
-    private OperationType operationType;
+    private Operation operation;
     private Class<Type> classType;
     private String pathRegex;
 
-    private OperationArguments(Class<Type> classType, Predicate<Type> precondition)
+    public String getScope()
     {
-        this.precondition = precondition;
-        this.classType = classType;
+        return scope;
     }
 
-    private OperationArguments(Class<Type> classType, String pathRegex)
+    public void setScope(String scope)
     {
-        this.pathRegex = pathRegex;
-        this.classType = classType;
+        this.scope = scope;
     }
 
-    private OperationArguments(Class<Type> classType, Predicate<Type> precondition, String pathRegex)
+    public OperationType getOperationType()
     {
-        this.precondition = precondition;
-        this.pathRegex = pathRegex;
-        this.classType = classType;
+        return operationType;
     }
 
-    public static <Type> OperationArguments create(Class<Type> classType, Predicate<Type> precondition)
+    public void setOperationType(OperationType operationType)
     {
-        return new OperationArguments<>(classType, precondition);
-    }
-
-    public static <Type> OperationArguments create(Class<Type> classType, String pathRegex)
-    {
-        return new OperationArguments<>(classType, pathRegex);
-    }
-
-    public static <Type> OperationArguments create(Class<Type> classType, Predicate<Type> precondition, String pathRegex)
-    {
-        return new OperationArguments<>(classType, precondition, pathRegex);
+        this.operationType = operationType;
     }
 
     public Predicate<Type> getPrecondition()
@@ -80,14 +68,29 @@ public class OperationArguments<Type>
         this.function = function;
     }
 
-    public OperationType getOperationType()
+    public Operation getOperation()
     {
-        return operationType;
+        return operation;
     }
 
-    public void setOperationType(OperationType operationType)
+    public void setOperation(Operation operation)
     {
-        this.operationType = operationType;
+        this.operation = operation;
+    }
+
+    public void setClassType(Class<Type> classType)
+    {
+        this.classType = classType;
+    }
+
+    public String getPathRegex()
+    {
+        return pathRegex;
+    }
+
+    public void setPathRegex(String pathRegex)
+    {
+        this.pathRegex = pathRegex;
     }
 
     public boolean testPrecondition(Type object, String path)

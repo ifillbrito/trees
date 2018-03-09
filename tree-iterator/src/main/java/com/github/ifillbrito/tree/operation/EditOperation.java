@@ -1,4 +1,4 @@
-package com.github.ifillbrito.tree.iterator;
+package com.github.ifillbrito.tree.operation;
 
 import com.github.ifillbrito.tree.node.NodeWrapper;
 
