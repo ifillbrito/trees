@@ -6,9 +6,9 @@ package com.github.ifillbrito.tree.iterator;
 public interface BaseOperation<Precondition extends BaseOperationPrecondition, Operation extends BaseOperation>
 {
     // The following methods affect the recursive iteration within the corresponding scope
-    Precondition skip();
+    Precondition skipOne();
 
-    Precondition ignore();
+    Precondition skipTree();
 
     Precondition filter();
 
