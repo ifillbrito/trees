@@ -124,7 +124,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
 
             for ( OperationArguments operationArguments : this.operationArguments )
             {
-                if ( !operationArguments.testPrecondition(object, currentPath) ) continue;
+                if ( !operationArguments.testPrecondition(parent, object, currentPath) ) continue;
 
                 switch ( operationArguments.getOperation() )
                 {

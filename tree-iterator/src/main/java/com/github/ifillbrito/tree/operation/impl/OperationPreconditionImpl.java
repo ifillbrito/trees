@@ -2,10 +2,7 @@ package com.github.ifillbrito.tree.operation.impl;
 
 import com.github.ifillbrito.common.function.TriPredicate;
 import com.github.ifillbrito.tree.iterator.TreeIterator;
-import com.github.ifillbrito.tree.operation.BaseOperation;
-import com.github.ifillbrito.tree.operation.OperationArguments;
-import com.github.ifillbrito.tree.operation.OperationFactory;
-import com.github.ifillbrito.tree.operation.OperationPrecondition;
+import com.github.ifillbrito.tree.operation.*;
 
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
@@ -27,32 +24,39 @@ public class OperationPreconditionImpl<Node, Operation extends BaseOperation, Pr
     @Override
     public Operation forAll()
     {
-        arguments.setPrecondition(node -> true);
+        arguments.setPreconditionType(OperationPreconditionType.FOR_ALL);
+        arguments.setNodePredicate(node -> true);
         return (Operation) OperationFactory.createOperation(arguments, this);
     }
 
     @Override
     public Operation forAll(Predicate<Node> precondition)
     {
-        arguments.setPrecondition(precondition);
+        arguments.setPreconditionType(OperationPreconditionType.FOR_ALL);
+        arguments.setNodePredicate(precondition);
         return (Operation) OperationFactory.createOperation(arguments, this);
     }
 
     @Override
     public Operation forAll(BiPredicate<Node, String> precondition)
     {
-        return null;
+        arguments.setPreconditionType(OperationPreconditionType.FOR_ALL_BI_PREDICATE);
+        arguments.setNodeAndPathPredicate(precondition);
+        return (Operation) OperationFactory.createOperation(arguments, this);
     }
 
     @Override
     public Operation forAll(TriPredicate<Node, Node, String> precondition)
     {
-        return null;
+        arguments.setPreconditionType(OperationPreconditionType.FOR_ALL_TRI_PREDICATE);
+        arguments.setParentAndNodeAndPathPredicate(precondition);
+        return (Operation) OperationFactory.createOperation(arguments, this);
     }
 
     @Override
     public Operation forPath(String pathRegex)
     {
+        arguments.setPreconditionType(OperationPreconditionType.FOR_ALL_PATH_REGEX);
         arguments.setPathRegex(pathRegex);
         return (Operation) OperationFactory.createOperation(arguments, this);
     }
@@ -60,7 +64,9 @@ public class OperationPreconditionImpl<Node, Operation extends BaseOperation, Pr
     @Override
     public Operation forPath(Predicate<String> precondition)
     {
-        return null;
+        arguments.setPreconditionType(OperationPreconditionType.FOR_ALL_PATH_PREDICATE);
+        arguments.setPathPredicate(precondition);
+        return (Operation) OperationFactory.createOperation(arguments, this);
     }
 
     @Override

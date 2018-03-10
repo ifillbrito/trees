@@ -1,5 +1,8 @@
 package com.github.ifillbrito.tree.operation;
 
+import com.github.ifillbrito.common.function.TriPredicate;
+
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -7,16 +10,20 @@ import java.util.function.Predicate;
 /**
  * Created by gjib on 05.01.18.
  */
-public class OperationArguments<Type>
+public class OperationArguments<Node>
 {
     private String scope;
     private OperationType operationType;
-    private Predicate<Type> precondition;
-    private Consumer<Type> consumer;
-    private Function<Type, ?> function;
+    private OperationPreconditionType preconditionType;
+    private Predicate<Node> nodePredicate;
+    private Consumer<Node> consumer;
+    private Function<Node, ?> function;
     private Operation operation;
-    private Class<Type> classType;
+    private Class<Node> classType;
     private String pathRegex;
+    private Predicate<String> pathPredicate;
+    private BiPredicate<Node, String> nodeAndPathPredicate;
+    private TriPredicate<Node, Node, String> parentAndNodeAndPathPredicate;
 
     public String getScope()
     {
@@ -38,32 +45,42 @@ public class OperationArguments<Type>
         this.operationType = operationType;
     }
 
-    public Predicate<Type> getPrecondition()
+    public OperationPreconditionType getPreconditionType()
     {
-        return precondition;
+        return preconditionType;
     }
 
-    public void setPrecondition(Predicate<Type> precondition)
+    public void setPreconditionType(OperationPreconditionType preconditionType)
     {
-        this.precondition = precondition;
+        this.preconditionType = preconditionType;
     }
 
-    public Consumer<Type> getConsumer()
+    public Predicate<Node> getNodePredicate()
+    {
+        return nodePredicate;
+    }
+
+    public void setNodePredicate(Predicate<Node> nodePredicate)
+    {
+        this.nodePredicate = nodePredicate;
+    }
+
+    public Consumer<Node> getConsumer()
     {
         return consumer;
     }
 
-    public void setConsumer(Consumer<Type> consumer)
+    public void setConsumer(Consumer<Node> consumer)
     {
         this.consumer = consumer;
     }
 
-    public Function<Type, ?> getFunction()
+    public Function<Node, ?> getFunction()
     {
         return function;
     }
 
-    public void setFunction(Function<Type, ?> function)
+    public void setFunction(Function<Node, ?> function)
     {
         this.function = function;
     }
@@ -78,7 +95,7 @@ public class OperationArguments<Type>
         this.operation = operation;
     }
 
-    public void setClassType(Class<Type> classType)
+    public void setClassType(Class<Node> classType)
     {
         this.classType = classType;
     }
@@ -93,42 +110,84 @@ public class OperationArguments<Type>
         this.pathRegex = pathRegex;
     }
 
-    public boolean testPrecondition(Type object, String path)
+    public Predicate<String> getPathPredicate()
     {
-        if ( pathRegex != null && precondition != null )
+        return pathPredicate;
+    }
+
+    public void setPathPredicate(Predicate<String> pathPredicate)
+    {
+        this.pathPredicate = pathPredicate;
+    }
+
+    public BiPredicate<Node, String> getNodeAndPathPredicate()
+    {
+        return nodeAndPathPredicate;
+    }
+
+    public void setNodeAndPathPredicate(BiPredicate<Node, String> nodeAndPathPredicate)
+    {
+        this.nodeAndPathPredicate = nodeAndPathPredicate;
+    }
+
+    public TriPredicate<Node, Node, String> getParentAndNodeAndPathPredicate()
+    {
+        return parentAndNodeAndPathPredicate;
+    }
+
+    public void setParentAndNodeAndPathPredicate(TriPredicate<Node, Node, String> parentAndNodeAndPathPredicate)
+    {
+        this.parentAndNodeAndPathPredicate = parentAndNodeAndPathPredicate;
+    }
+
+    public boolean testPrecondition(Node parent, Node object, String path)
+    {
+        switch ( preconditionType )
         {
-            return isValidPrecondition(object) && isValidPath(object, path);
-        }
-        else if ( pathRegex == null && precondition != null )
-        {
-            return isValidPrecondition(object);
-        }
-        else if ( pathRegex != null ) // precondition is null
-        {
-            return isValidPath(object, path);
-        }
-        else
-        {
-            return false;
+            case FOR_ALL:
+                return testNodePredicate(object);
+            case FOR_ALL_BI_PREDICATE:
+                return testNodeAndPathPredicate(object, path);
+            case FOR_ALL_TRI_PREDICATE:
+                return testParentAndNodeAndPathPredicate(parent, object, path);
+            case FOR_ALL_PATH_REGEX:
+                return testPathRegex(object, path);
+            default: //case FOR_ALL_PATH_PREDICATE:
+                return testPathPredicate(object, path);
         }
     }
 
-    private boolean isValidPath(Type object, String path)
+    private boolean testNodePredicate(Node object)
+    {
+        return isTargetClass(object) && this.getNodePredicate().test(object);
+    }
+
+    private boolean testPathRegex(Node object, String path)
     {
         return isTargetClass(object) && path.matches(pathRegex);
     }
 
-    private boolean isValidPrecondition(Type object)
+    private boolean testPathPredicate(Node object, String path)
     {
-        return isTargetClass(object) && this.getPrecondition().test(object);
+        return isTargetClass(object) && pathPredicate.test(path);
     }
 
-    private boolean isTargetClass(Type object)
+    private boolean testNodeAndPathPredicate(Node object, String path)
+    {
+        return isTargetClass(object) && nodeAndPathPredicate.test(object, path);
+    }
+
+    private boolean testParentAndNodeAndPathPredicate(Node parent, Node object, String path)
+    {
+        return isTargetClass(object) && parentAndNodeAndPathPredicate.test(parent, object, path);
+    }
+
+    private boolean isTargetClass(Node object)
     {
         return this.getClassType().isAssignableFrom(object.getClass());
     }
 
-    private Class<Type> getClassType()
+    private Class<Node> getClassType()
     {
         return classType;
     }
