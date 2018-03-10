@@ -100,7 +100,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     public void execute()
     {
         Iterator iterator = Collections.singletonList(node).iterator();
-        executeRecursive(iterator);
+        executeRecursive(null, iterator);
         operationArguments.clear();
     }
 
@@ -111,13 +111,13 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
         return EMPTY_PATH;
     }
 
-    protected void executeRecursive(Iterator<Node> iterator)
+    protected void executeRecursive(Node parent, Iterator<Node> childrenIterator)
     {
-        if ( iterator == null ) return;
+        if ( childrenIterator == null ) return;
 
-        while ( iterator.hasNext() )
+        while ( childrenIterator.hasNext() )
         {
-            Node object = iterator.next();
+            Node object = childrenIterator.next();
             if ( object == null ) continue;
             String tmpPath = currentPath;
             currentPath = createPath(object, currentPath);
@@ -135,7 +135,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
 //                        iterator.set(operationArguments.getFunction().apply(object));
                         break;
                     case REMOVE:
-                        iterator.remove();
+                        childrenIterator.remove();
                         break;
                     case COLLECT_AS_LIST:
                         collection.add(object);
