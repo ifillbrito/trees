@@ -8,7 +8,7 @@ import java.util.function.Function;
 /**
  * Created by gjib on 17.01.18.
  */
-public interface EditOperation<Node, Precondition extends BaseOperationPrecondition>
+public interface EditOperation<Node, Precondition extends OperationPrecondition>
         extends BaseOperation<Precondition, EditOperation<Node, Precondition>>
 {
     Precondition apply(Consumer<Node> consumer);

@@ -1,18 +1,18 @@
 package com.github.ifillbrito.tree.operation.impl;
 
 import com.github.ifillbrito.tree.operation.BaseOperation;
-import com.github.ifillbrito.tree.operation.BaseOperationPrecondition;
 import com.github.ifillbrito.tree.operation.OperationArguments;
+import com.github.ifillbrito.tree.operation.OperationPrecondition;
 
 /**
  * Created by gjib on 09.03.18.
  */
-public class BaseOperationImpl<Precondition extends BaseOperationPrecondition, Operation extends BaseOperation> implements BaseOperation<Precondition, Operation>
+public class BaseOperationImpl<Precondition extends OperationPrecondition, Operation extends BaseOperation> implements BaseOperation<Precondition, Operation>
 {
     protected final OperationArguments arguments;
-    protected final BaseOperationPrecondition precondition;
+    protected final OperationPrecondition precondition;
 
-    public BaseOperationImpl(OperationArguments arguments, BaseOperationPrecondition precondition)
+    public BaseOperationImpl(OperationArguments arguments, OperationPrecondition precondition)
     {
         this.arguments = arguments;
         this.precondition = precondition;

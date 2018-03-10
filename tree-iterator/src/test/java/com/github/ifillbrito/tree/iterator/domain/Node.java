@@ -39,6 +39,11 @@ public class Node
         setValue(function.apply(value));
     }
 
+    public boolean isEven()
+    {
+        return value % 2 == 0;
+    }
+
     public List<Node> getChildren()
     {
         return children;

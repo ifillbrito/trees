@@ -1,10 +1,10 @@
 package com.github.ifillbrito.tree.operation.impl;
 
 import com.github.ifillbrito.tree.node.NodeWrapper;
-import com.github.ifillbrito.tree.operation.BaseOperationPrecondition;
 import com.github.ifillbrito.tree.operation.EditOperation;
 import com.github.ifillbrito.tree.operation.Operation;
 import com.github.ifillbrito.tree.operation.OperationArguments;
+import com.github.ifillbrito.tree.operation.OperationPrecondition;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -12,9 +12,9 @@ import java.util.function.Function;
 /**
  * Created by gjib on 09.03.18.
  */
-public class EditOperationImpl<Node, Precondition extends BaseOperationPrecondition> extends BaseOperationImpl<Precondition, EditOperation<Node, Precondition>> implements EditOperation<Node, Precondition>
+public class EditOperationImpl<Node, Precondition extends OperationPrecondition> extends BaseOperationImpl<Precondition, EditOperation<Node, Precondition>> implements EditOperation<Node, Precondition>
 {
-    public EditOperationImpl(OperationArguments arguments, BaseOperationPrecondition precondition)
+    public EditOperationImpl(OperationArguments arguments, OperationPrecondition precondition)
     {
         super(arguments, precondition);
     }

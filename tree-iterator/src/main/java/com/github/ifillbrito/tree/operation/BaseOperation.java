@@ -3,7 +3,7 @@ package com.github.ifillbrito.tree.operation;
 /**
  * Created by gjib on 17.01.18.
  */
-public interface BaseOperation<Precondition extends BaseOperationPrecondition, Operation extends BaseOperation>
+public interface BaseOperation<Precondition extends OperationPrecondition, Operation extends BaseOperation>
 {
     // The following methods affect the recursive iteration within the corresponding scope
     Precondition skipOne();

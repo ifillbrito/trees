@@ -8,6 +8,7 @@ import com.github.ifillbrito.tree.iterator.domain.Node;
  */
 public class NodeIterator extends AbstractTreeIterator<Node>
 {
+
     public NodeIterator(Node node)
     {
         super(node);
@@ -20,5 +21,11 @@ public class NodeIterator extends AbstractTreeIterator<Node>
         {
             executeRecursive(node.getChildren().iterator());
         }
+    }
+
+    @Override
+    protected String createPath(Node node, String path)
+    {
+        return path + PATH_SEPARATOR + node.getName();
     }
 }
