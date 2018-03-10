@@ -12,10 +12,10 @@ import java.util.function.Predicate;
  */
 public class OperationPreconditionImpl<Node, Operation extends BaseOperation, Precondition extends OperationPrecondition> implements OperationPrecondition<Node, Operation, Precondition>
 {
-    protected final OperationArguments<Node> arguments;
+    protected final OperationArguments arguments;
     protected final TreeIterator<Node> treeIterator;
 
-    public OperationPreconditionImpl(OperationArguments<Node> arguments, TreeIterator<Node> treeIterator)
+    public OperationPreconditionImpl(OperationArguments arguments, TreeIterator<Node> treeIterator)
     {
         this.arguments = arguments;
         this.treeIterator = treeIterator;
@@ -84,6 +84,7 @@ public class OperationPreconditionImpl<Node, Operation extends BaseOperation, Pr
     @Override
     public Precondition resolveParents()
     {
+        arguments.enableParentResolution();
         return (Precondition) this;
     }
 

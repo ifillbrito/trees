@@ -5,32 +5,50 @@ package com.github.ifillbrito.tree.node;
  */
 public class NodeWrapper<Type>
 {
-    private String path;
-    private NodeWrapper parent;
+    private NodeWrapper<Type> parent;
     private Type node;
+
+    /**
+     * Only available if the method {@link com.github.ifillbrito.tree.iterator.AbstractTreeIterator#createPath(Object, String)}
+     * has been overridden.
+     */
+    private String parentPath, currentPath;
 
     public NodeWrapper(Type node)
     {
         this.node = node;
     }
 
-    public static <T> NodeWrapper<T> of (T object)
+    public NodeWrapper(NodeWrapper<Type> other)
     {
-        return new NodeWrapper<>(object);
+        this.setParentPath(other.getParentPath());
+        this.setParent(other.getParent());
+        this.setNode(other.getNode());
     }
 
-    public String getPath()
+    public String getParentPath()
     {
-        return path;
+        return parentPath;
     }
 
-    public NodeWrapper<Type> setPath(String path)
+    public NodeWrapper<Type> setParentPath(String parentPath)
     {
-        this.path = path;
+        this.parentPath = parentPath;
         return this;
     }
 
-    public NodeWrapper getParent()
+    public String getCurrentPath()
+    {
+        return currentPath;
+    }
+
+    public NodeWrapper<Type> setCurrentPath(String currentPath)
+    {
+        this.currentPath = currentPath;
+        return this;
+    }
+
+    public NodeWrapper<Type> getParent()
     {
         return parent;
     }

@@ -16,9 +16,10 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
 {
     protected static final String PATH_SEPARATOR = "/";
     protected static final String EMPTY_PATH = "";
-    protected Node node;
-    protected int editCounter, iterateCounter, collectCounter = 0;
-    protected LinkedList<OperationArguments> operationArguments = new LinkedList<>();
+    private Node node;
+    private int editCounter, iterateCounter, collectCounter = 0;
+    private LinkedList<OperationArguments> operationArguments = new LinkedList<>();
+    private Map<Node, NodeWrapper<Node>> nodeWrapperMap = new HashMap<>();
 
     // data holders
     private String currentPath = EMPTY_PATH;
@@ -75,7 +76,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     @Override
     public <Precondition extends OperationPrecondition<Node, EditOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, EditOperation<Node, Precondition>, Precondition>>> Precondition edit()
     {
-        OperationArguments<Node> arguments = new OperationArguments<>();
+        OperationArguments arguments = new OperationArguments();
         operationArguments.add(arguments);
         String scope = OperationType.EDIT.getScopePrefix() + editCounter++;
         arguments.setScope(scope);
@@ -119,12 +120,21 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
         {
             Node object = childrenIterator.next();
             if ( object == null ) continue;
-            String tmpPath = currentPath;
+            String parentPath = currentPath;
             currentPath = createPath(object, currentPath);
+
+            NodeWrapper<Node> wrapper = getOrCreateWrapper(parent, object);
+            wrapper.setNode(object);
+            wrapper.setParentPath(parentPath);
+            wrapper.setCurrentPath(currentPath);
 
             for ( OperationArguments operationArguments : this.operationArguments )
             {
-                if ( !operationArguments.testPrecondition(parent, object, currentPath) ) continue;
+                if ( isTargetNodeWrapper(wrapper, operationArguments) ||
+                        isTargetNode(parent, object, operationArguments) )
+                {
+                    continue;
+                }
 
                 switch ( operationArguments.getOperation() )
                 {
@@ -152,7 +162,41 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
             }
 
             executeRecursionStep(object);
-            currentPath = tmpPath;
+            currentPath = parentPath;
         }
+    }
+
+    private NodeWrapper<Node> getOrCreateWrapper(Node parent, Node object)
+    {
+        NodeWrapper<Node> parentWrapper = nodeWrapperMap.get(parent);
+        if ( parentWrapper == null )
+        {
+            if ( parent == null )
+            {
+                parentWrapper = new NodeWrapper<>(object);
+                nodeWrapperMap.put(object, parentWrapper);
+            }
+            else
+            {
+                parentWrapper = new NodeWrapper<>(parent);
+                nodeWrapperMap.put(parent, parentWrapper);
+            }
+            return parentWrapper;
+        }
+
+        NodeWrapper<Node> wrapper = new NodeWrapper<>(object);
+        wrapper.setParent(parentWrapper);
+        nodeWrapperMap.put(object, wrapper);
+        return wrapper;
+    }
+
+    private boolean isTargetNodeWrapper(NodeWrapper<Node> wrapper, OperationArguments operationArguments)
+    {
+        return operationArguments.isParentResolutionEnabled() && !operationArguments.testPrecondition(wrapper);
+    }
+
+    private boolean isTargetNode(Node parent, Node object, OperationArguments operationArguments)
+    {
+        return !operationArguments.isParentResolutionEnabled() && !operationArguments.testPrecondition(parent, object, currentPath);
     }
 }

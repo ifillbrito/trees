@@ -135,4 +135,25 @@ public class NodeIterator_PreconditionsTest extends AbstractNodeIteratorTest
         // -- then
         assertValues(root, 1, 10, 11, 24, 13, 20, 21, 22);
     }
+
+    @Test
+    public void forAll_resolveParents()
+    {
+        // -- given
+        Node root = createTree();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .edit()
+                    .resolveParents()
+                    .forAll(wrapper -> wrapper.getParent() != null && wrapper.getParent().getNode().isEven())
+                    .apply(node -> node.setValue( x -> x * 2))
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertValues(root, 1, 10, 22, 24, 26, 20, 42, 44);
+    }
 }

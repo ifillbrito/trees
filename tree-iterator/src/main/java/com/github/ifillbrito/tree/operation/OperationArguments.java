@@ -1,6 +1,7 @@
 package com.github.ifillbrito.tree.operation;
 
 import com.github.ifillbrito.common.function.TriPredicate;
+import com.github.ifillbrito.tree.node.NodeWrapper;
 
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -10,20 +11,21 @@ import java.util.function.Predicate;
 /**
  * Created by gjib on 05.01.18.
  */
-public class OperationArguments<Node>
+public class OperationArguments
 {
     private String scope;
     private OperationType operationType;
     private OperationPreconditionType preconditionType;
-    private Predicate<Node> nodePredicate;
-    private Consumer<Node> consumer;
-    private Function<Node, ?> function;
+    private Predicate nodePredicate;
+    private Consumer consumer;
+    private Function function;
     private Operation operation;
-    private Class<Node> classType;
+    private Class classType;
     private String pathRegex;
     private Predicate<String> pathPredicate;
-    private BiPredicate<Node, String> nodeAndPathPredicate;
-    private TriPredicate<Node, Node, String> parentAndNodeAndPathPredicate;
+    private BiPredicate nodeAndPathPredicate;
+    private TriPredicate parentAndNodeAndPathPredicate;
+    private boolean parentResolutionEnabled = false;
 
     public String getScope()
     {
@@ -55,32 +57,32 @@ public class OperationArguments<Node>
         this.preconditionType = preconditionType;
     }
 
-    public Predicate<Node> getNodePredicate()
+    public Predicate getNodePredicate()
     {
         return nodePredicate;
     }
 
-    public void setNodePredicate(Predicate<Node> nodePredicate)
+    public void setNodePredicate(Predicate nodePredicate)
     {
         this.nodePredicate = nodePredicate;
     }
 
-    public Consumer<Node> getConsumer()
+    public Consumer getConsumer()
     {
         return consumer;
     }
 
-    public void setConsumer(Consumer<Node> consumer)
+    public void setConsumer(Consumer consumer)
     {
         this.consumer = consumer;
     }
 
-    public Function<Node, ?> getFunction()
+    public Function getFunction()
     {
         return function;
     }
 
-    public void setFunction(Function<Node, ?> function)
+    public void setFunction(Function function)
     {
         this.function = function;
     }
@@ -95,7 +97,7 @@ public class OperationArguments<Node>
         this.operation = operation;
     }
 
-    public void setClassType(Class<Node> classType)
+    public void setClassType(Class classType)
     {
         this.classType = classType;
     }
@@ -120,27 +122,43 @@ public class OperationArguments<Node>
         this.pathPredicate = pathPredicate;
     }
 
-    public BiPredicate<Node, String> getNodeAndPathPredicate()
+    public BiPredicate getNodeAndPathPredicate()
     {
         return nodeAndPathPredicate;
     }
 
-    public void setNodeAndPathPredicate(BiPredicate<Node, String> nodeAndPathPredicate)
+    public void setNodeAndPathPredicate(BiPredicate nodeAndPathPredicate)
     {
         this.nodeAndPathPredicate = nodeAndPathPredicate;
     }
 
-    public TriPredicate<Node, Node, String> getParentAndNodeAndPathPredicate()
+    public TriPredicate getParentAndNodeAndPathPredicate()
     {
         return parentAndNodeAndPathPredicate;
     }
 
-    public void setParentAndNodeAndPathPredicate(TriPredicate<Node, Node, String> parentAndNodeAndPathPredicate)
+    public void setParentAndNodeAndPathPredicate(TriPredicate parentAndNodeAndPathPredicate)
     {
         this.parentAndNodeAndPathPredicate = parentAndNodeAndPathPredicate;
     }
 
-    public boolean testPrecondition(Node parent, Node object, String path)
+    public void enableParentResolution()
+    {
+        this.parentResolutionEnabled = true;
+        this.classType = NodeWrapper.class;
+    }
+
+    public boolean isParentResolutionEnabled()
+    {
+        return parentResolutionEnabled;
+    }
+
+    public boolean testPrecondition(NodeWrapper wrapper)
+    {
+        return testPrecondition(wrapper.getParent(), wrapper, wrapper.getCurrentPath());
+    }
+
+    public boolean testPrecondition(Object parent, Object object, String path)
     {
         switch ( preconditionType )
         {
@@ -157,37 +175,37 @@ public class OperationArguments<Node>
         }
     }
 
-    private boolean testNodePredicate(Node object)
+    private boolean testNodePredicate(Object object)
     {
         return isTargetClass(object) && this.getNodePredicate().test(object);
     }
 
-    private boolean testPathRegex(Node object, String path)
+    private boolean testPathRegex(Object object, String path)
     {
         return isTargetClass(object) && path.matches(pathRegex);
     }
 
-    private boolean testPathPredicate(Node object, String path)
+    private boolean testPathPredicate(Object object, String path)
     {
         return isTargetClass(object) && pathPredicate.test(path);
     }
 
-    private boolean testNodeAndPathPredicate(Node object, String path)
+    private boolean testNodeAndPathPredicate(Object object, String path)
     {
         return isTargetClass(object) && nodeAndPathPredicate.test(object, path);
     }
 
-    private boolean testParentAndNodeAndPathPredicate(Node parent, Node object, String path)
+    private boolean testParentAndNodeAndPathPredicate(Object parent, Object object, String path)
     {
         return isTargetClass(object) && parentAndNodeAndPathPredicate.test(parent, object, path);
     }
 
-    private boolean isTargetClass(Node object)
+    private boolean isTargetClass(Object object)
     {
         return this.getClassType().isAssignableFrom(object.getClass());
     }
 
-    private Class<Node> getClassType()
+    private Class getClassType()
     {
         return classType;
     }
