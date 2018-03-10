@@ -1,10 +1,7 @@
 package com.github.ifillbrito.tree.iterator;
 
 import com.github.ifillbrito.tree.node.NodeWrapper;
-import com.github.ifillbrito.tree.operation.CollectOperation;
-import com.github.ifillbrito.tree.operation.EditOperation;
-import com.github.ifillbrito.tree.operation.IterateOperation;
-import com.github.ifillbrito.tree.operation.OperationPrecondition;
+import com.github.ifillbrito.tree.operation.*;
 
 import java.util.Collection;
 import java.util.Map;
@@ -51,6 +48,8 @@ public interface TreeIterator<Node>
     TreeIterator<NodeWrapper<Node>> resolveParents();
 
     <T> TreeIterator<T> use(Class<T> type);
+
+    TreeIterator<Node> setExecution(Execution execution);
 
     void execute();
 }

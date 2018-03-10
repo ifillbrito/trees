@@ -137,7 +137,7 @@ public class NodeIterator_PreconditionsTest extends AbstractNodeIteratorTest
     }
 
     @Test
-    public void forAll_resolveParents()
+    public void resolveParents()
     {
         // -- given
         Node root = createTree();
@@ -155,5 +155,59 @@ public class NodeIterator_PreconditionsTest extends AbstractNodeIteratorTest
 
         // -- then
         assertValues(root, 1, 10, 22, 24, 26, 20, 42, 44);
+    }
+
+    @Test
+    public void topDownExecution()
+    {
+        // -- given
+        Node root = createTree();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .edit()
+                    .topDownExecution()
+                    /*
+                        Operation: select the nodes which value is higher than 20 and
+                        multiply the parent by a factor of 2.
+                        Result of top down execution: only the direct parent is affected.
+                     */
+                    .forAll(node -> node.getValue() > 20)
+                    .resolveParents()
+                    .apply(wrapper -> wrapper.getParent().getNode().setValue(x -> x * 2))
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertValues(root, 1, 10, 11, 12, 13, 80, 21, 22);
+    }
+
+    @Test
+    public void buttomUpExecution()
+    {
+        // -- given
+        Node root = createTree();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .edit()
+                    .bottomUpExecution()
+                    /*
+                        Operation: select the nodes which value is higher than 20 and
+                        multiply the parent by a factor of 2.
+                        Result of buttom up execution: all ascendants are affected.
+                     */
+                    .forAll(node -> node.getValue() > 20)
+                    .resolveParents()
+                    .apply(wrapper -> wrapper.getParent().getNode().setValue(x -> x * 2))
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertValues(root, 2, 10, 11, 12, 13, 80, 21, 22);
     }
 }

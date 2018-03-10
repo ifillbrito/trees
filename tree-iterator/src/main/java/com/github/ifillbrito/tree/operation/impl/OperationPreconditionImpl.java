@@ -72,13 +72,17 @@ public class OperationPreconditionImpl<Node, Operation extends BaseOperation, Pr
     @Override
     public OperationPrecondition<Node, Operation, Precondition> topDownExecution()
     {
-        return null;
+        arguments.setExecution(Execution.TOP_DOWN);
+        treeIterator.setExecution(Execution.TOP_DOWN);
+        return this;
     }
 
     @Override
     public OperationPrecondition<Node, Operation, Precondition> bottomUpExecution()
     {
-        return null;
+        arguments.setExecution(Execution.BOTTOM_UP);
+        treeIterator.setExecution(Execution.BOTTOM_UP);
+        return this;
     }
 
     @Override

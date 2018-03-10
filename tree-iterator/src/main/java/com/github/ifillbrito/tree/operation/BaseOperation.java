@@ -22,8 +22,4 @@ public interface BaseOperation<Precondition extends OperationPrecondition, Opera
     Operation takeLast(int maxCount);
 
     Operation takeOccurrence(int occurrence);
-
-    Operation bottomUpExecution();
-
-    Operation topDownExecution();
 }

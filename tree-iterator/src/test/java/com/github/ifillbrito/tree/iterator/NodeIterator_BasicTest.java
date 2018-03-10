@@ -7,7 +7,7 @@ import org.junit.Test;
 /**
  * Created by gjib on 09.03.18.
  */
-public class NodeIterator_ModifyTest extends AbstractNodeIteratorTest
+public class NodeIterator_BasicTest extends AbstractNodeIteratorTest
 {
     @Test
     public void modify()

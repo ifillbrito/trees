@@ -42,6 +42,7 @@ public class EditOperationImpl<Node, Precondition extends OperationPrecondition>
     @Override
     public EditOperation<NodeWrapper<Node>, Precondition> resolveParents()
     {
-        return null;
+        arguments.enableParentResolutionForOperation();
+        return (EditOperation<NodeWrapper<Node>, Precondition>) this;
     }
 }

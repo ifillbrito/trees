@@ -20,6 +20,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     private int editCounter, iterateCounter, collectCounter = 0;
     private LinkedList<OperationArguments> operationArguments = new LinkedList<>();
     private Map<Node, NodeWrapper<Node>> nodeWrapperMap = new HashMap<>();
+    private Execution execution = Execution.TOP_DOWN;
 
     // data holders
     private String currentPath = EMPTY_PATH;
@@ -82,6 +83,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
         arguments.setScope(scope);
         arguments.setClassType(classType);
         arguments.setOperationType(OperationType.EDIT);
+        arguments.setExecution(execution);
         return (Precondition) new OperationPreconditionImpl<Node, EditOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, EditOperation<Node, Precondition>, Precondition>>(arguments, this);
     }
 
@@ -95,6 +97,13 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     public <T> TreeIterator<T> use(Class<T> type)
     {
         return null;
+    }
+
+    @Override
+    public TreeIterator<Node> setExecution(Execution execution)
+    {
+        this.execution = execution;
+        return this;
     }
 
     @Override
@@ -128,41 +137,95 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
             wrapper.setParentPath(parentPath);
             wrapper.setCurrentPath(currentPath);
 
-            for ( OperationArguments operationArguments : this.operationArguments )
-            {
-                if ( isTargetNodeWrapper(wrapper, operationArguments) ||
-                        isTargetNode(parent, object, operationArguments) )
-                {
-                    continue;
-                }
-
-                switch ( operationArguments.getOperation() )
-                {
-                    case MODIFY:
-                        operationArguments.getConsumer().accept(object);
-                        break;
-                    case REPLACE:
-//                        iterator.set(operationArguments.getFunction().apply(object));
-                        break;
-                    case REMOVE:
-                        childrenIterator.remove();
-                        break;
-                    case COLLECT_AS_LIST:
-                        collection.add(object);
-                        break;
-                    case COLLECT_AS_MAP:
-                        map.put(mapKeyFunction.apply(object), object);
-                        break;
-                    case GROUP:
-                        map.putIfAbsent(mapKeyFunction.apply(object), collectionSupplier.get());
-                        Collection collection = (Collection) map.get(mapKeyFunction.apply(object));
-                        collection.add(object);
-                        break;
-                }
-            }
-
+            executeOperations(Execution.TOP_DOWN, parent, object, wrapper, childrenIterator);
             executeRecursionStep(object);
             currentPath = parentPath;
+            executeOperations(Execution.BOTTOM_UP, parent, object, wrapper, childrenIterator);
+        }
+    }
+
+    private void executeOperations(
+            Execution execution,
+            Node parent,
+            Node object,
+            NodeWrapper<Node> wrapper,
+            Iterator<Node> childrenIterator
+    )
+    {
+        for ( OperationArguments operationArguments : this.operationArguments )
+        {
+            if ( !execution.equals(operationArguments.getExecution()) )
+            {
+                continue;
+            }
+            if ( isTargetNodeWrapper(wrapper, operationArguments) ||
+                    isTargetNode(parent, object, operationArguments) )
+            {
+                continue;
+            }
+
+            if ( operationArguments.isParentResolutionEnabledForOperation() )
+            {
+                executeOperationInWrapper(wrapper, operationArguments, childrenIterator);
+            }
+            else
+            {
+                executeOperationInObject(object, operationArguments, childrenIterator);
+            }
+        }
+    }
+
+    private void executeOperationInWrapper(NodeWrapper<Node> wrapper, OperationArguments operationArguments, Iterator<Node> childrenIterator)
+    {
+        switch ( operationArguments.getOperation() )
+        {
+            case MODIFY:
+                operationArguments.getConsumer().accept(wrapper);
+                break;
+            case REPLACE:
+//                        iterator.set(operationArguments.getFunction().apply(object));
+                break;
+            case REMOVE:
+                childrenIterator.remove();
+                break;
+            case COLLECT_AS_LIST:
+                collection.add(wrapper);
+                break;
+            case COLLECT_AS_MAP:
+                map.put(mapKeyFunction.apply(wrapper), wrapper);
+                break;
+            case GROUP:
+                map.putIfAbsent(mapKeyFunction.apply(wrapper), collectionSupplier.get());
+                Collection collection = (Collection) map.get(mapKeyFunction.apply(wrapper));
+                collection.add(wrapper);
+                break;
+        }
+    }
+
+    private void executeOperationInObject(Node object, OperationArguments operationArguments, Iterator<Node> childrenIterator)
+    {
+        switch ( operationArguments.getOperation() )
+        {
+            case MODIFY:
+                operationArguments.getConsumer().accept(object);
+                break;
+            case REPLACE:
+//                        iterator.set(operationArguments.getFunction().apply(object));
+                break;
+            case REMOVE:
+                childrenIterator.remove();
+                break;
+            case COLLECT_AS_LIST:
+                collection.add(object);
+                break;
+            case COLLECT_AS_MAP:
+                map.put(mapKeyFunction.apply(object), object);
+                break;
+            case GROUP:
+                map.putIfAbsent(mapKeyFunction.apply(object), collectionSupplier.get());
+                Collection collection = (Collection) map.get(mapKeyFunction.apply(object));
+                collection.add(object);
+                break;
         }
     }
 
@@ -192,11 +255,11 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
 
     private boolean isTargetNodeWrapper(NodeWrapper<Node> wrapper, OperationArguments operationArguments)
     {
-        return operationArguments.isParentResolutionEnabled() && !operationArguments.testPrecondition(wrapper);
+        return operationArguments.isParentResolutionEnabledForPrecondition() && !operationArguments.testPrecondition(wrapper);
     }
 
     private boolean isTargetNode(Node parent, Node object, OperationArguments operationArguments)
     {
-        return !operationArguments.isParentResolutionEnabled() && !operationArguments.testPrecondition(parent, object, currentPath);
+        return !operationArguments.isParentResolutionEnabledForPrecondition() && !operationArguments.testPrecondition(parent, object, currentPath);
     }
 }

@@ -25,7 +25,9 @@ public class OperationArguments
     private Predicate<String> pathPredicate;
     private BiPredicate nodeAndPathPredicate;
     private TriPredicate parentAndNodeAndPathPredicate;
-    private boolean parentResolutionEnabled = false;
+    private boolean parentResolutionEnabledForPrecondition = false;
+    private boolean parentResolutionEnabledForOperation = false;
+    private Execution execution;
 
     public String getScope()
     {
@@ -144,13 +146,33 @@ public class OperationArguments
 
     public void enableParentResolution()
     {
-        this.parentResolutionEnabled = true;
+        this.parentResolutionEnabledForPrecondition = true;
         this.classType = NodeWrapper.class;
     }
 
-    public boolean isParentResolutionEnabled()
+    public boolean isParentResolutionEnabledForPrecondition()
     {
-        return parentResolutionEnabled;
+        return parentResolutionEnabledForPrecondition;
+    }
+
+    public void enableParentResolutionForOperation()
+    {
+        this.parentResolutionEnabledForOperation = true;
+    }
+
+    public boolean isParentResolutionEnabledForOperation()
+    {
+        return parentResolutionEnabledForOperation;
+    }
+
+    public Execution getExecution()
+    {
+        return execution;
+    }
+
+    public void setExecution(Execution execution)
+    {
+        this.execution = execution;
     }
 
     public boolean testPrecondition(NodeWrapper wrapper)
@@ -197,11 +219,13 @@ public class OperationArguments
 
     private boolean testParentAndNodeAndPathPredicate(Object parent, Object object, String path)
     {
-        return isTargetClass(object) && parentAndNodeAndPathPredicate.test(parent, object, path);
+        return isTargetClass(object) && isTargetClass(parent)
+                && parentAndNodeAndPathPredicate.test(parent, object, path);
     }
 
     private boolean isTargetClass(Object object)
     {
+        if (object == null) return false;
         return this.getClassType().isAssignableFrom(object.getClass());
     }
 

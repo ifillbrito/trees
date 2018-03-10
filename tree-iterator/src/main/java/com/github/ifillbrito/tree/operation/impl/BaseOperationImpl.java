@@ -65,16 +65,4 @@ public class BaseOperationImpl<Precondition extends OperationPrecondition, Opera
     {
         return null;
     }
-
-    @Override
-    public Operation bottomUpExecution()
-    {
-        return null;
-    }
-
-    @Override
-    public Operation topDownExecution()
-    {
-        return null;
-    }
 }
