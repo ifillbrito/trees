@@ -49,7 +49,7 @@ public interface TreeIterator<Node>
 
     <T> TreeIterator<T> use(Class<T> type);
 
-    TreeIterator<Node> setExecution(Execution execution);
+    TreeIterator<Node> setExecution(ExecutionMode executionMode);
 
     void execute();
 }

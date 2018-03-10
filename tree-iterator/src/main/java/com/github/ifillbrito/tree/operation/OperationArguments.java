@@ -27,7 +27,7 @@ public class OperationArguments
     private TriPredicate parentAndNodeAndPathPredicate;
     private boolean parentResolutionEnabledForPrecondition = false;
     private boolean parentResolutionEnabledForOperation = false;
-    private Execution execution;
+    private ExecutionMode executionMode;
 
     public String getScope()
     {
@@ -165,14 +165,14 @@ public class OperationArguments
         return parentResolutionEnabledForOperation;
     }
 
-    public Execution getExecution()
+    public ExecutionMode getExecutionMode()
     {
-        return execution;
+        return executionMode;
     }
 
-    public void setExecution(Execution execution)
+    public void setExecutionMode(ExecutionMode executionMode)
     {
-        this.execution = execution;
+        this.executionMode = executionMode;
     }
 
     public boolean testPrecondition(NodeWrapper wrapper)

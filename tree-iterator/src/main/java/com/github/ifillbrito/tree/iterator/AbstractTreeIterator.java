@@ -14,13 +14,16 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
 {
+    public static final ExecutionMode DEFAULT_EXECUTION_MODE = ExecutionMode.TOP_DOWN;
     protected static final String PATH_SEPARATOR = "/";
     protected static final String EMPTY_PATH = "";
     private Node node;
     private int editCounter, iterateCounter, collectCounter = 0;
     private LinkedList<OperationArguments> operationArguments = new LinkedList<>();
+    private LinkedList<OperationArguments> topDownOperationArguments = new LinkedList<>();
+    private LinkedList<OperationArguments> bottomUpOperationArguments = new LinkedList<>();
     private Map<Node, NodeWrapper<Node>> nodeWrapperMap = new HashMap<>();
-    private Execution execution = Execution.TOP_DOWN;
+    private ExecutionMode executionMode = DEFAULT_EXECUTION_MODE;
 
     // data holders
     private String currentPath = EMPTY_PATH;
@@ -83,7 +86,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
         arguments.setScope(scope);
         arguments.setClassType(classType);
         arguments.setOperationType(OperationType.EDIT);
-        arguments.setExecution(execution);
+        arguments.setExecutionMode(executionMode);
         return (Precondition) new OperationPreconditionImpl<Node, EditOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, EditOperation<Node, Precondition>, Precondition>>(arguments, this);
     }
 
@@ -100,15 +103,27 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     }
 
     @Override
-    public TreeIterator<Node> setExecution(Execution execution)
+    public TreeIterator<Node> setExecution(ExecutionMode executionMode)
     {
-        this.execution = execution;
+        this.executionMode = executionMode;
         return this;
     }
 
     @Override
     public void execute()
     {
+        for ( OperationArguments operationArgument : operationArguments )
+        {
+            switch ( operationArgument.getExecutionMode() )
+            {
+                case TOP_DOWN:
+                    topDownOperationArguments.add(operationArgument);
+                    break;
+                case BOTTOM_UP:
+                    bottomUpOperationArguments.add(operationArgument);
+                    break;
+            }
+        }
         Iterator iterator = Collections.singletonList(node).iterator();
         executeRecursive(null, iterator);
         operationArguments.clear();
@@ -137,27 +152,23 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
             wrapper.setParentPath(parentPath);
             wrapper.setCurrentPath(currentPath);
 
-            executeOperations(Execution.TOP_DOWN, parent, object, wrapper, childrenIterator);
+            executeOperations(topDownOperationArguments, parent, object, wrapper, childrenIterator);
             executeRecursionStep(object);
             currentPath = parentPath;
-            executeOperations(Execution.BOTTOM_UP, parent, object, wrapper, childrenIterator);
+            executeOperations(bottomUpOperationArguments, parent, object, wrapper, childrenIterator);
         }
     }
 
     private void executeOperations(
-            Execution execution,
+            List<OperationArguments> operationArgumentsByExecutionMode,
             Node parent,
             Node object,
             NodeWrapper<Node> wrapper,
             Iterator<Node> childrenIterator
     )
     {
-        for ( OperationArguments operationArguments : this.operationArguments )
+        for ( OperationArguments operationArguments : operationArgumentsByExecutionMode )
         {
-            if ( !execution.equals(operationArguments.getExecution()) )
-            {
-                continue;
-            }
             if ( isTargetNodeWrapper(wrapper, operationArguments) ||
                     isTargetNode(parent, object, operationArguments) )
             {
@@ -166,43 +177,16 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
 
             if ( operationArguments.isParentResolutionEnabledForOperation() )
             {
-                executeOperationInWrapper(wrapper, operationArguments, childrenIterator);
+                executeOperation(wrapper, operationArguments, childrenIterator);
             }
             else
             {
-                executeOperationInObject(object, operationArguments, childrenIterator);
+                executeOperation(object, operationArguments, childrenIterator);
             }
         }
     }
 
-    private void executeOperationInWrapper(NodeWrapper<Node> wrapper, OperationArguments operationArguments, Iterator<Node> childrenIterator)
-    {
-        switch ( operationArguments.getOperation() )
-        {
-            case MODIFY:
-                operationArguments.getConsumer().accept(wrapper);
-                break;
-            case REPLACE:
-//                        iterator.set(operationArguments.getFunction().apply(object));
-                break;
-            case REMOVE:
-                childrenIterator.remove();
-                break;
-            case COLLECT_AS_LIST:
-                collection.add(wrapper);
-                break;
-            case COLLECT_AS_MAP:
-                map.put(mapKeyFunction.apply(wrapper), wrapper);
-                break;
-            case GROUP:
-                map.putIfAbsent(mapKeyFunction.apply(wrapper), collectionSupplier.get());
-                Collection collection = (Collection) map.get(mapKeyFunction.apply(wrapper));
-                collection.add(wrapper);
-                break;
-        }
-    }
-
-    private void executeOperationInObject(Node object, OperationArguments operationArguments, Iterator<Node> childrenIterator)
+    private void executeOperation(Object object, OperationArguments operationArguments, Iterator<Node> childrenIterator)
     {
         switch ( operationArguments.getOperation() )
         {
@@ -239,11 +223,6 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
                 parentWrapper = new NodeWrapper<>(object);
                 nodeWrapperMap.put(object, parentWrapper);
             }
-            else
-            {
-                parentWrapper = new NodeWrapper<>(parent);
-                nodeWrapperMap.put(parent, parentWrapper);
-            }
             return parentWrapper;
         }
 
@@ -255,11 +234,13 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
 
     private boolean isTargetNodeWrapper(NodeWrapper<Node> wrapper, OperationArguments operationArguments)
     {
-        return operationArguments.isParentResolutionEnabledForPrecondition() && !operationArguments.testPrecondition(wrapper);
+        return operationArguments.isParentResolutionEnabledForPrecondition()
+                && !operationArguments.testPrecondition(wrapper);
     }
 
     private boolean isTargetNode(Node parent, Node object, OperationArguments operationArguments)
     {
-        return !operationArguments.isParentResolutionEnabledForPrecondition() && !operationArguments.testPrecondition(parent, object, currentPath);
+        return !operationArguments.isParentResolutionEnabledForPrecondition()
+                && !operationArguments.testPrecondition(parent, object, currentPath);
     }
 }
