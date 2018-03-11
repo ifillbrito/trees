@@ -185,7 +185,7 @@ public class NodeIterator_PreconditionsTest extends AbstractNodeIteratorTest
     }
 
     @Test
-    public void buttomUpExecution()
+    public void bottomUpExecution()
     {
         // -- given
         Node root = createTree();
