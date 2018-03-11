@@ -235,26 +235,26 @@ public class OperationArguments
         return classType;
     }
 
-    public <Target> Target getByScope(Function<OperationArguments, Target> getter, Target defaultValue, Map<String, Target> executionModeMap )
+    public <Target> Target getByScope(Function<OperationArguments, Target> getter, Target defaultValue, Map<String, Target> targetPropertyMap )
     {
         String scope = this.getScope();
-        Target executionMode = getter.apply(this);
-        if ( executionMode == null )
+        Target targetProperty = getter.apply(this);
+        if ( targetProperty == null )
         {
-            Target scopeExecutionMode = executionModeMap.get(scope);
-            if ( scopeExecutionMode == null )
+            Target targetPropertyInScope = targetPropertyMap.get(scope);
+            if ( targetPropertyInScope == null )
             {
-                executionMode = defaultValue;
+                targetProperty = defaultValue;
             }
             else
             {
-                executionMode = scopeExecutionMode;
+                targetProperty = targetPropertyInScope;
             }
         }
         else
         {
-            executionModeMap.put(scope, executionMode);
+            targetPropertyMap.put(scope, targetProperty);
         }
-        return executionMode;
+        return targetProperty;
     }
 }

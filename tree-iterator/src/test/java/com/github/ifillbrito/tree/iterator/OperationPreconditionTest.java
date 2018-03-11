@@ -7,7 +7,7 @@ import org.junit.Test;
 /**
  * Created by gjib on 09.03.18.
  */
-public class NodeIterator_PreconditionsTest extends AbstractNodeIteratorTest
+public class OperationPreconditionTest extends AbstractNodeIteratorTest
 {
     @Test
     public void forAll()
