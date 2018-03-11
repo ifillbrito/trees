@@ -3,6 +3,7 @@ package com.github.ifillbrito.tree.operation;
 import com.github.ifillbrito.common.function.TriPredicate;
 import com.github.ifillbrito.tree.node.NodeWrapper;
 
+import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -232,5 +233,28 @@ public class OperationArguments
     private Class getClassType()
     {
         return classType;
+    }
+
+    public <Target> Target getByScope(Function<OperationArguments, Target> getter, Target defaultValue, Map<String, Target> executionModeMap )
+    {
+        String scope = this.getScope();
+        Target executionMode = getter.apply(this);
+        if ( executionMode == null )
+        {
+            Target scopeExecutionMode = executionModeMap.get(scope);
+            if ( scopeExecutionMode == null )
+            {
+                executionMode = defaultValue;
+            }
+            else
+            {
+                executionMode = scopeExecutionMode;
+            }
+        }
+        else
+        {
+            executionModeMap.put(scope, executionMode);
+        }
+        return executionMode;
     }
 }

@@ -86,7 +86,6 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
         arguments.setScope(scope);
         arguments.setClassType(classType);
         arguments.setOperationType(OperationType.EDIT);
-        arguments.setExecutionMode(executionMode);
         return (Precondition) new OperationPreconditionImpl<Node, EditOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, EditOperation<Node, Precondition>, Precondition>>(arguments, this);
     }
 
@@ -112,18 +111,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     @Override
     public void execute()
     {
-        for ( OperationArguments operationArgument : operationArguments )
-        {
-            switch ( operationArgument.getExecutionMode() )
-            {
-                case TOP_DOWN:
-                    topDownOperationArguments.add(operationArgument);
-                    break;
-                case BOTTOM_UP:
-                    bottomUpOperationArguments.add(operationArgument);
-                    break;
-            }
-        }
+        separateOperationArguments();
         Iterator iterator = Collections.singletonList(node).iterator();
         executeRecursive(null, iterator);
         operationArguments.clear();
@@ -243,4 +231,28 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
         return !operationArguments.isParentResolutionEnabledForPrecondition()
                 && !operationArguments.testPrecondition(parent, object, currentPath);
     }
+
+    private void separateOperationArguments()
+    {
+        Map<String, ExecutionMode> executionModeMap = new HashMap<>();
+        for ( OperationArguments operationArgument : operationArguments )
+        {
+            ExecutionMode executionMode = operationArgument.getByScope(
+                    OperationArguments::getExecutionMode,
+                    this.executionMode,
+                    executionModeMap
+            );
+
+            switch ( executionMode )
+            {
+                case TOP_DOWN:
+                    topDownOperationArguments.add(operationArgument);
+                    break;
+                case BOTTOM_UP:
+                    bottomUpOperationArguments.add(operationArgument);
+                    break;
+            }
+        }
+    }
+
 }

@@ -210,4 +210,32 @@ public class NodeIterator_PreconditionsTest extends AbstractNodeIteratorTest
         // -- then
         assertValues(root, 2, 10, 11, 12, 13, 80, 21, 22);
     }
+
+    @Test
+    public void executionModeScope()
+    {
+        // -- given
+        Node root = createTree();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .edit()
+                    .bottomUpExecution()
+                    .forAll(node -> node.getValue() > 20)
+                    .resolveParents()
+                    .apply(wrapper -> wrapper.getParent().getNode().setValue(x -> x * 2))
+                    .end()
+                .edit()
+                    .topDownExecution()
+                    .forAll(node -> node.getValue() < 20 && node.getValue() > 10)
+                    .resolveParents()
+                    .apply(wrapper -> wrapper.getParent().getNode().setValue(x -> x + 2))
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertValues(root, 2, 16, 11, 12, 13, 80, 21, 22);
+    }
 }
