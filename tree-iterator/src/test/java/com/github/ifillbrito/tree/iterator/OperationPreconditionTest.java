@@ -236,6 +236,19 @@ public class OperationPreconditionTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
+        // Remember that the top down operations are executed first that the bottom up.
+        /*
+        TD: top down; BU: bottom up
+
+            1 ->            TD: do nothing                              BU: do nothing
+                10 ->       TD: do nothing                              BU: do nothing
+                    11 ->   TD: parent = parent+2 (parent.value = 12)   BU: do nothing
+                    12 ->   TD: parent = parent+2 (parent.value = 14)   BU: do nothing
+                    13 ->   TD: parent = parent+2 (parent.value = 16)   BU: do nothing
+                20 ->       TD: do nothing                              BU: parent = parent*2 (parent.value = 2)
+                    21 ->   TD: do nothing                              BU: parent = parent*2 (parent.value = 80)
+                    22 ->   TD: do nothing                              BU: parent = parent*2 (parent.value = 40)
+         */
         assertValues(root, 2, 16, 11, 12, 13, 80, 21, 22);
     }
 }
