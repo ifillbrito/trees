@@ -1,7 +1,7 @@
 package com.github.ifillbrito.tree.operation.impl;
 
 import com.github.ifillbrito.tree.operation.BaseOperation;
-import com.github.ifillbrito.tree.operation.OperationArguments;
+import com.github.ifillbrito.tree.operation.OperationDataHolder;
 import com.github.ifillbrito.tree.operation.OperationPrecondition;
 
 /**
@@ -9,10 +9,10 @@ import com.github.ifillbrito.tree.operation.OperationPrecondition;
  */
 public class BaseOperationImpl<Precondition extends OperationPrecondition, Operation extends BaseOperation> implements BaseOperation<Precondition, Operation>
 {
-    protected final OperationArguments arguments;
+    protected final OperationDataHolder arguments;
     protected final OperationPrecondition precondition;
 
-    public BaseOperationImpl(OperationArguments arguments, OperationPrecondition precondition)
+    public BaseOperationImpl(OperationDataHolder arguments, OperationPrecondition precondition)
     {
         this.arguments = arguments;
         this.precondition = precondition;

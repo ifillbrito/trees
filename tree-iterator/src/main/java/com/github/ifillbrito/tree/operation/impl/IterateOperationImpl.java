@@ -1,7 +1,7 @@
 package com.github.ifillbrito.tree.operation.impl;
 
 import com.github.ifillbrito.tree.operation.IterateOperation;
-import com.github.ifillbrito.tree.operation.OperationArguments;
+import com.github.ifillbrito.tree.operation.OperationDataHolder;
 import com.github.ifillbrito.tree.operation.OperationPrecondition;
 
 /**
@@ -9,7 +9,7 @@ import com.github.ifillbrito.tree.operation.OperationPrecondition;
  */
 public class IterateOperationImpl<Node, Precondition extends OperationPrecondition> extends BaseOperationImpl<Precondition, IterateOperation<Node, Precondition>> implements IterateOperation<Node, Precondition>
 {
-    public IterateOperationImpl(OperationArguments arguments, OperationPrecondition precondition)
+    public IterateOperationImpl(OperationDataHolder arguments, OperationPrecondition precondition)
     {
         super(arguments, precondition);
     }

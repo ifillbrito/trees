@@ -12,10 +12,10 @@ import java.util.function.Predicate;
  */
 public class OperationPreconditionImpl<Node, Operation extends BaseOperation, Precondition extends OperationPrecondition> implements OperationPrecondition<Node, Operation, Precondition>
 {
-    protected final OperationArguments arguments;
+    protected final OperationDataHolder arguments;
     protected final TreeIterator<Node> treeIterator;
 
-    public OperationPreconditionImpl(OperationArguments arguments, TreeIterator<Node> treeIterator)
+    public OperationPreconditionImpl(OperationDataHolder arguments, TreeIterator<Node> treeIterator)
     {
         this.arguments = arguments;
         this.treeIterator = treeIterator;

@@ -12,23 +12,32 @@ import java.util.function.Predicate;
 /**
  * Created by gjib on 05.01.18.
  */
-public class OperationArguments
+public class OperationDataHolder
 {
+    // scope data
     private String scope;
+    private ExecutionMode executionMode;
+
+    // operation data
     private OperationType operationType;
-    private OperationPreconditionType preconditionType;
-    private Predicate nodePredicate;
-    private Consumer consumer;
-    private Function function;
     private Operation operation;
+
+    // modify operation data
+    private Consumer consumer;
+
+    // replace operation data
+    private Function function;
+
+    // precondition data
     private Class classType;
-    private String pathRegex;
-    private Predicate<String> pathPredicate;
-    private BiPredicate nodeAndPathPredicate;
-    private TriPredicate parentAndNodeAndPathPredicate;
     private boolean parentResolutionEnabledForPrecondition = false;
     private boolean parentResolutionEnabledForOperation = false;
-    private ExecutionMode executionMode;
+    private OperationPreconditionType preconditionType;
+    private String pathRegex;
+    private Predicate<String> pathPredicate;
+    private Predicate nodePredicate;
+    private BiPredicate nodeAndPathPredicate;
+    private TriPredicate parentAndNodeAndPathPredicate;
 
     public String getScope()
     {
@@ -235,7 +244,7 @@ public class OperationArguments
         return classType;
     }
 
-    public <Target> Target getByScope(Function<OperationArguments, Target> getter, Target defaultValue, Map<String, Target> targetPropertyMap )
+    public <Target> Target getByScope(Function<OperationDataHolder, Target> getter, Target defaultValue, Map<String, Target> targetPropertyMap )
     {
         String scope = this.getScope();
         Target targetProperty = getter.apply(this);

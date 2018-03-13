@@ -10,7 +10,7 @@ import com.github.ifillbrito.tree.operation.impl.IterateOperationImpl;
  */
 public class OperationFactory
 {
-    public static BaseOperationImpl createOperation(OperationArguments arguments, OperationPrecondition precondition)
+    public static BaseOperationImpl createOperation(OperationDataHolder arguments, OperationPrecondition precondition)
     {
         switch ( arguments.getOperationType() )
         {

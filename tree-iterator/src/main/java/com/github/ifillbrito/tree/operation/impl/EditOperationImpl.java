@@ -3,7 +3,7 @@ package com.github.ifillbrito.tree.operation.impl;
 import com.github.ifillbrito.tree.node.NodeWrapper;
 import com.github.ifillbrito.tree.operation.EditOperation;
 import com.github.ifillbrito.tree.operation.Operation;
-import com.github.ifillbrito.tree.operation.OperationArguments;
+import com.github.ifillbrito.tree.operation.OperationDataHolder;
 import com.github.ifillbrito.tree.operation.OperationPrecondition;
 
 import java.util.function.Consumer;
@@ -14,7 +14,7 @@ import java.util.function.Function;
  */
 public class EditOperationImpl<Node, Precondition extends OperationPrecondition> extends BaseOperationImpl<Precondition, EditOperation<Node, Precondition>> implements EditOperation<Node, Precondition>
 {
-    public EditOperationImpl(OperationArguments arguments, OperationPrecondition precondition)
+    public EditOperationImpl(OperationDataHolder arguments, OperationPrecondition precondition)
     {
         super(arguments, precondition);
     }
