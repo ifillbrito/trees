@@ -236,7 +236,7 @@ public class OperationPreconditionTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        // Remember that the top down operations are executed first that the bottom up.
+        // Remember that the top down operations are executed first than the bottom up ones.
         /*
         TD: top down; BU: bottom up
 
