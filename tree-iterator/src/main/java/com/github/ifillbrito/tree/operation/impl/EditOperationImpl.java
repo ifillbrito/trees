@@ -14,38 +14,38 @@ import java.util.function.Function;
  */
 public class EditOperationImpl<Node, Precondition extends OperationPrecondition> extends BaseOperationImpl<Precondition, EditOperation<Node, Precondition>> implements EditOperation<Node, Precondition>
 {
-    public EditOperationImpl(OperationDataHolder arguments, OperationPrecondition precondition)
+    public EditOperationImpl(OperationDataHolder operationDataHolder, OperationPrecondition precondition)
     {
-        super(arguments, precondition);
+        super(operationDataHolder, precondition);
     }
 
     @Override
     public Precondition apply(Consumer<Node> consumer)
     {
-        arguments.setOperation(Operation.MODIFY);
-        arguments.setConsumer(consumer);
+        operationDataHolder.setOperation(Operation.MODIFY);
+        operationDataHolder.setConsumer(consumer);
         return (Precondition) precondition;
     }
 
     @Override
     public Precondition replace(Function<Node, ?> replaceFunction)
     {
-        arguments.setOperation(Operation.REPLACE);
-        arguments.setReplaceFunction(replaceFunction);
+        operationDataHolder.setOperation(Operation.REPLACE);
+        operationDataHolder.setReplaceFunction(replaceFunction);
         return (Precondition) precondition;
     }
 
     @Override
     public Precondition remove()
     {
-        arguments.setOperation(Operation.REMOVE);
+        operationDataHolder.setOperation(Operation.REMOVE);
         return (Precondition) precondition;
     }
 
     @Override
     public EditOperation<NodeWrapper<Node>, Precondition> resolveParents()
     {
-        arguments.enableParentResolutionForOperation();
+        operationDataHolder.enableParentResolutionForOperation();
         return (EditOperation<NodeWrapper<Node>, Precondition>) this;
     }
 }

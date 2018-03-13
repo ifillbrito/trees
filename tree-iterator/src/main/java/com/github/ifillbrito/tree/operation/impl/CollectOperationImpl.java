@@ -9,8 +9,8 @@ import com.github.ifillbrito.tree.operation.OperationPrecondition;
  */
 public class CollectOperationImpl<Node, Precondition extends OperationPrecondition> extends BaseOperationImpl<Precondition, CollectOperation<Node, Precondition>> implements CollectOperation<Node, Precondition>
 {
-    public CollectOperationImpl(OperationDataHolder arguments, OperationPrecondition precondition)
+    public CollectOperationImpl(OperationDataHolder operationDataHolder, OperationPrecondition precondition)
     {
-        super(arguments, precondition);
+        super(operationDataHolder, precondition);
     }
 }

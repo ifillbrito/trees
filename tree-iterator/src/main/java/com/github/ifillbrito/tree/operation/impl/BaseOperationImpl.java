@@ -7,14 +7,14 @@ import com.github.ifillbrito.tree.operation.OperationPrecondition;
 /**
  * Created by gjib on 09.03.18.
  */
-public class BaseOperationImpl<Precondition extends OperationPrecondition, Operation extends BaseOperation> implements BaseOperation<Precondition, Operation>
+public class BaseOperationImpl<Precondition extends OperationPrecondition, OperationType extends BaseOperation> implements BaseOperation<Precondition, OperationType>
 {
-    protected final OperationDataHolder arguments;
+    protected final OperationDataHolder operationDataHolder;
     protected final OperationPrecondition precondition;
 
-    public BaseOperationImpl(OperationDataHolder arguments, OperationPrecondition precondition)
+    public BaseOperationImpl(OperationDataHolder operationDataHolder, OperationPrecondition precondition)
     {
-        this.arguments = arguments;
+        this.operationDataHolder = operationDataHolder;
         this.precondition = precondition;
     }
 
@@ -33,35 +33,35 @@ public class BaseOperationImpl<Precondition extends OperationPrecondition, Opera
     @Override
     public Precondition filter()
     {
-        return null;
+        return (Precondition) precondition;
     }
 
     @Override
-    public Operation take(int maxCount)
+    public OperationType take(int maxCount)
     {
         return null;
     }
 
     @Override
-    public Operation take(int occurrenceFrom, int occurrenceTo)
+    public OperationType take(int occurrenceFrom, int occurrenceTo)
     {
         return null;
     }
 
     @Override
-    public Operation takeLast()
+    public OperationType takeLast()
     {
         return null;
     }
 
     @Override
-    public Operation takeLast(int maxCount)
+    public OperationType takeLast(int maxCount)
     {
         return null;
     }
 
     @Override
-    public Operation takeOccurrence(int occurrence)
+    public OperationType takeOccurrence(int occurrence)
     {
         return null;
     }

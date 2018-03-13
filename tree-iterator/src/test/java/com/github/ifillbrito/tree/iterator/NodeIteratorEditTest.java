@@ -75,10 +75,10 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertEquals((Integer)1, root.getValue());
-        assertEquals((Integer)20, root.getChildren().get(0).getValue());
-        assertEquals((Integer)21, root.getChildren().get(0).getChildren().get(0).getValue());
-        assertEquals((Integer)22, root.getChildren().get(0).getChildren().get(1).getValue());
+        assertEquals((Integer) 1, root.getValue());
+        assertEquals((Integer) 20, root.getChildren().get(0).getValue());
+        assertEquals((Integer) 21, root.getChildren().get(0).getChildren().get(0).getValue());
+        assertEquals((Integer) 22, root.getChildren().get(0).getChildren().get(1).getValue());
     }
 
     @Test

@@ -15,9 +15,9 @@ public class OperationPreconditionImpl<Node, Operation extends BaseOperation, Pr
     protected final OperationDataHolder arguments;
     protected final TreeIterator<Node> treeIterator;
 
-    public OperationPreconditionImpl(OperationDataHolder arguments, TreeIterator<Node> treeIterator)
+    public OperationPreconditionImpl(OperationDataHolder operationDataHolder, TreeIterator<Node> treeIterator)
     {
-        this.arguments = arguments;
+        this.arguments = operationDataHolder;
         this.treeIterator = treeIterator;
     }
 

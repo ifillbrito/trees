@@ -39,6 +39,37 @@ public class OperationDataHolder
     private BiPredicate nodeAndPathPredicate;
     private TriPredicate parentAndNodeAndPathPredicate;
 
+    public OperationDataHolder(OperationType operationType, int scopeCounter, Class classType)
+    {
+        String scope = operationType.getScopePrefix() + scopeCounter;
+        this.setOperationType(operationType);
+        this.setScope(scope);
+        this.setClassType(classType);
+    }
+
+    public <Target> Target getByScope(Function<OperationDataHolder, Target> getter, Target defaultValue, Map<String, Target> targetPropertyMap)
+    {
+        String scope = this.getScope();
+        Target targetProperty = getter.apply(this);
+        if ( targetProperty == null )
+        {
+            Target targetPropertyInScope = targetPropertyMap.get(scope);
+            if ( targetPropertyInScope == null )
+            {
+                targetProperty = defaultValue;
+            }
+            else
+            {
+                targetProperty = targetPropertyInScope;
+            }
+        }
+        else
+        {
+            targetPropertyMap.put(scope, targetProperty);
+        }
+        return targetProperty;
+    }
+
     public String getScope()
     {
         return scope;
@@ -235,35 +266,12 @@ public class OperationDataHolder
 
     private boolean isTargetClass(Object object)
     {
-        if (object == null) return false;
+        if ( object == null ) return false;
         return this.getClassType().isAssignableFrom(object.getClass());
     }
 
     private Class getClassType()
     {
         return classType;
-    }
-
-    public <Target> Target getByScope(Function<OperationDataHolder, Target> getter, Target defaultValue, Map<String, Target> targetPropertyMap )
-    {
-        String scope = this.getScope();
-        Target targetProperty = getter.apply(this);
-        if ( targetProperty == null )
-        {
-            Target targetPropertyInScope = targetPropertyMap.get(scope);
-            if ( targetPropertyInScope == null )
-            {
-                targetProperty = defaultValue;
-            }
-            else
-            {
-                targetProperty = targetPropertyInScope;
-            }
-        }
-        else
-        {
-            targetPropertyMap.put(scope, targetProperty);
-        }
-        return targetProperty;
     }
 }

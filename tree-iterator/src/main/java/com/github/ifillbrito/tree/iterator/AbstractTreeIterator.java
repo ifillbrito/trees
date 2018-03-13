@@ -18,7 +18,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     protected static final String PATH_SEPARATOR = "/";
     protected static final String EMPTY_PATH = "";
     private Node node;
-    private int editScopeCounter, iterateScopeCounter, collectScopeCounter = 0;
+    private int editScopeCounter, collectScopeCounter, iterateScopeCounter = 0;
     private LinkedList<OperationDataHolder> operationDataHolders = new LinkedList<>();
     private LinkedList<OperationDataHolder> topDownOperationDataHolders = new LinkedList<>();
     private LinkedList<OperationDataHolder> bottomUpOperationDataHolders = new LinkedList<>();
@@ -27,11 +27,12 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
 
     // data holders
     private String currentPath = EMPTY_PATH;
-    private Collection collection;
     private Class classType;
     private Map map;
+    private Collection collection;
     private Function mapKeyFunction;
     private Supplier collectionSupplier;
+    private Function valueTransformer;
 
     // flags
     private boolean replaceOperationUsed = false;
@@ -47,31 +48,94 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     @Override
     public <Item, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition collect(Collection<Item> collection)
     {
-        return null;
+        return createOperationPrecondition(collection);
     }
 
     @Override
-    public <Key, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition collect(Map<Key, Node> map, Function<Node, Key> keySupplier)
+    public <Item, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition collect(Collection<Item> collection, Function<Node, Item> valueTransformer)
     {
-        return null;
+        this.valueTransformer = valueTransformer;
+        return createOperationPrecondition(collection);
+    }
+
+    private <Item, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition createOperationPrecondition(Collection<Item> collection)
+    {
+        OperationDataHolder operationDataHolder = new OperationDataHolder(OperationType.COLLECT, collectScopeCounter++, classType);
+        operationDataHolder.setOperation(Operation.COLLECT_AS_LIST);
+        operationDataHolders.add(operationDataHolder);
+        this.collection = collection;
+        return (Precondition) new OperationPreconditionImpl<
+                Node,
+                CollectOperation<Node, Precondition>,
+                OperationPrecondition<
+                        NodeWrapper<Node>,
+                        CollectOperation<Node, Precondition>,
+                        Precondition
+                        >
+                >(operationDataHolder, this);
     }
 
     @Override
-    public <Key, Value, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition collect(Map<Key, Value> map, Function<Node, Key> keySupplier, Function<Node, Value> valueTransformer)
+    public <Key, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition collect(Map<Key, Node> map, Function<Node, Key> mapKeySupplier)
     {
-        return null;
+        return createOperationPrecondition(map, mapKeySupplier);
     }
 
     @Override
-    public <Key, Item, ListOrSet extends Collection<Item>, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition group(Map<Key, ListOrSet> map, Function<Node, Key> keySupplier, Supplier<ListOrSet> listSupplier)
+    public <Key, Value, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition collect(Map<Key, Value> map, Function<Node, Key> mapKeySupplier, Function<Node, Value> valueTransformer)
     {
-        return null;
+        this.valueTransformer = valueTransformer;
+        return createOperationPrecondition(map, mapKeySupplier);
+    }
+
+    private <Key, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition createOperationPrecondition(Map<Key, ?> map, Function<Node, Key> mapKeySupplier)
+    {
+        OperationDataHolder operationDataHolder = new OperationDataHolder(OperationType.COLLECT, collectScopeCounter++, classType);
+        operationDataHolder.setOperation(Operation.COLLECT_AS_MAP);
+        operationDataHolders.add(operationDataHolder);
+        this.map = map;
+        this.mapKeyFunction = mapKeySupplier;
+        return (Precondition) new OperationPreconditionImpl<
+                Node,
+                CollectOperation<Node, Precondition>,
+                OperationPrecondition<
+                        NodeWrapper<Node>,
+                        CollectOperation<Node, Precondition>,
+                        Precondition
+                        >
+                >(operationDataHolder, this);
     }
 
     @Override
-    public <Key, Item, ListOrSet extends Collection<Item>, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition group(Map<Key, ListOrSet> map, Function<Node, Key> keySupplier, Function<Node, Item> valueTransformer, Supplier<ListOrSet> listSupplier)
+    public <Key, Item, ListOrSet extends Collection<Item>, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition group(Map<Key, ListOrSet> map, Function<Node, Key> mapKeySupplier, Supplier<ListOrSet> collectionSupplier)
     {
-        return null;
+        return createOperationPrecondition(map, mapKeySupplier, collectionSupplier);
+    }
+
+    @Override
+    public <Key, Item, ListOrSet extends Collection<Item>, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition group(Map<Key, ListOrSet> map, Function<Node, Key> mapKeySupplier, Function<Node, Item> valueTransformer, Supplier<ListOrSet> collectionSupplier)
+    {
+        this.valueTransformer = valueTransformer;
+        return createOperationPrecondition(map, mapKeySupplier, collectionSupplier);
+    }
+
+    private <Key, Item, ListOrSet extends Collection<Item>, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition createOperationPrecondition(Map<Key, ListOrSet> map, Function<Node, Key> mapKeySupplier, Supplier<ListOrSet> collectionSupplier)
+    {
+        OperationDataHolder operationDataHolder = new OperationDataHolder(OperationType.COLLECT, collectScopeCounter++, classType);
+        operationDataHolder.setOperation(Operation.GROUP);
+        operationDataHolders.add(operationDataHolder);
+        this.map = map;
+        this.mapKeyFunction = mapKeySupplier;
+        this.collectionSupplier = collectionSupplier;
+        return (Precondition) new OperationPreconditionImpl<
+                Node,
+                CollectOperation<Node, Precondition>,
+                OperationPrecondition<
+                        NodeWrapper<Node>,
+                        CollectOperation<Node, Precondition>,
+                        Precondition
+                        >
+                >(operationDataHolder, this);
     }
 
     @Override
@@ -83,13 +147,16 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     @Override
     public <Precondition extends OperationPrecondition<Node, EditOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, EditOperation<Node, Precondition>, Precondition>>> Precondition edit()
     {
-        OperationDataHolder arguments = new OperationDataHolder();
+        OperationDataHolder arguments = new OperationDataHolder(OperationType.EDIT, editScopeCounter++, classType);
         operationDataHolders.add(arguments);
-        String scope = OperationType.EDIT.getScopePrefix() + editScopeCounter++;
-        arguments.setScope(scope);
-        arguments.setClassType(classType);
-        arguments.setOperationType(OperationType.EDIT);
-        return (Precondition) new OperationPreconditionImpl<Node, EditOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, EditOperation<Node, Precondition>, Precondition>>(arguments, this);
+        return (Precondition) new OperationPreconditionImpl<
+                Node,
+                EditOperation<Node, Precondition>,
+                OperationPrecondition<
+                        NodeWrapper<Node>,
+                        EditOperation<Node, Precondition>,
+                        Precondition>
+                >(arguments, this);
     }
 
     @Override
@@ -209,15 +276,36 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
                 childrenIterator.remove();
                 break;
             case COLLECT_AS_LIST:
-                collection.add(object);
+                if ( valueTransformer != null )
+                {
+                    collection.add(valueTransformer.apply(object));
+                }
+                else
+                {
+                    collection.add(object);
+                }
                 break;
             case COLLECT_AS_MAP:
-                map.put(mapKeyFunction.apply(object), object);
+                if ( valueTransformer != null )
+                {
+                    map.put(mapKeyFunction.apply(object), valueTransformer.apply(object));
+                }
+                else
+                {
+                    map.put(mapKeyFunction.apply(object), object);
+                }
                 break;
             case GROUP:
                 map.putIfAbsent(mapKeyFunction.apply(object), collectionSupplier.get());
                 Collection collection = (Collection) map.get(mapKeyFunction.apply(object));
-                collection.add(object);
+                if ( valueTransformer != null )
+                {
+                    collection.add(valueTransformer.apply(object));
+                }
+                else
+                {
+                    collection.add(object);
+                }
                 break;
         }
     }

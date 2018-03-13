@@ -17,28 +17,32 @@ public interface TreeIterator<Node>
             Collection<Item> collection
     );
 
+    <Item, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition collect(
+            Collection<Item> collection, Function<Node, Item> valueTransformer
+    );
+
     <Key, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition collect(
             Map<Key, Node> map,
-            Function<Node, Key> keySupplier
+            Function<Node, Key> mapKeySupplier
     );
 
     <Key, Value, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition collect(
             Map<Key, Value> map,
-            Function<Node, Key> keySupplier,
+            Function<Node, Key> mapKeySupplier,
             Function<Node, Value> valueTransformer
     );
 
     <Key, Item, ListOrSet extends Collection<Item>, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition group(
             Map<Key, ListOrSet> map,
-            Function<Node, Key> keySupplier,
-            Supplier<ListOrSet> listSupplier
+            Function<Node, Key> mapKeySupplier,
+            Supplier<ListOrSet> collectionSupplier
     );
 
     <Key, Item, ListOrSet extends Collection<Item>, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition group(
             Map<Key, ListOrSet> map,
-            Function<Node, Key> keySupplier,
+            Function<Node, Key> mapKeySupplier,
             Function<Node, Item> valueTransformer,
-            Supplier<ListOrSet> listSupplier
+            Supplier<ListOrSet> collectionSupplier
     );
 
     <Precondition extends OperationPrecondition<Node, IterateOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, IterateOperation<Node, Precondition>, Precondition>>> Precondition iterate();
