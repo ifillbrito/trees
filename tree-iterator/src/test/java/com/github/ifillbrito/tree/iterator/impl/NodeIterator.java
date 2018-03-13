@@ -19,7 +19,7 @@ public class NodeIterator extends AbstractTreeIterator<Node>
     {
         if ( node.getChildren() != null && !node.getChildren().isEmpty() )
         {
-            executeRecursive(node, node.getChildren().iterator());
+            executeRecursive(node, node.getChildren());
         }
     }
 

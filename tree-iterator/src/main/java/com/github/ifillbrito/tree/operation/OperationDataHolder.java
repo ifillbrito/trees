@@ -26,7 +26,7 @@ public class OperationDataHolder
     private Consumer consumer;
 
     // replace operation data
-    private Function function;
+    private Function replaceFunction;
 
     // precondition data
     private Class classType;
@@ -89,14 +89,14 @@ public class OperationDataHolder
         this.consumer = consumer;
     }
 
-    public Function getFunction()
+    public Function getReplaceFunction()
     {
-        return function;
+        return replaceFunction;
     }
 
-    public void setFunction(Function function)
+    public void setReplaceFunction(Function replaceFunction)
     {
-        this.function = function;
+        this.replaceFunction = replaceFunction;
     }
 
     public Operation getOperation()

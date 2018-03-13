@@ -13,6 +13,11 @@ public class NodeBuilder extends BaseBuilder<Node, NodeBuilder>
         super(object);
     }
 
+    public NodeBuilder()
+    {
+        super(new Node());
+    }
+
     public NodeBuilder withName(String name)
     {
         return this.set(Node::setName, name);

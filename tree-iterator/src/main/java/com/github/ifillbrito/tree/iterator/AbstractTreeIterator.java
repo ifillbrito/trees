@@ -19,9 +19,9 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     protected static final String EMPTY_PATH = "";
     private Node node;
     private int editScopeCounter, iterateScopeCounter, collectScopeCounter = 0;
-    private LinkedList<OperationDataHolder> operationArguments = new LinkedList<>();
-    private LinkedList<OperationDataHolder> topDownOperationArguments = new LinkedList<>();
-    private LinkedList<OperationDataHolder> bottomUpOperationArguments = new LinkedList<>();
+    private LinkedList<OperationDataHolder> operationDataHolders = new LinkedList<>();
+    private LinkedList<OperationDataHolder> topDownOperationDataHolders = new LinkedList<>();
+    private LinkedList<OperationDataHolder> bottomUpOperationDataHolders = new LinkedList<>();
     private Map<Node, NodeWrapper<Node>> nodeWrapperMap = new HashMap<>();
     private ExecutionMode executionMode = DEFAULT_EXECUTION_MODE;
 
@@ -32,6 +32,9 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     private Map map;
     private Function mapKeyFunction;
     private Supplier collectionSupplier;
+
+    // flags
+    private boolean replaceOperationUsed = false;
 
     public AbstractTreeIterator(Node node)
     {
@@ -81,7 +84,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     public <Precondition extends OperationPrecondition<Node, EditOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, EditOperation<Node, Precondition>, Precondition>>> Precondition edit()
     {
         OperationDataHolder arguments = new OperationDataHolder();
-        operationArguments.add(arguments);
+        operationDataHolders.add(arguments);
         String scope = OperationType.EDIT.getScopePrefix() + editScopeCounter++;
         arguments.setScope(scope);
         arguments.setClassType(classType);
@@ -111,10 +114,10 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     @Override
     public void execute()
     {
-        separateOperationArguments();
-        Iterator iterator = Collections.singletonList(node).iterator();
-        executeRecursive(null, iterator);
-        operationArguments.clear();
+        setupFlagsAndOperationDataHolders();
+        List<Node> rootNode = new ArrayList<>(Collections.singletonList(node));
+        executeRecursive(null, rootNode);
+        operationDataHolders.clear();
     }
 
     protected abstract void executeRecursionStep(Node node);
@@ -124,9 +127,21 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
         return EMPTY_PATH;
     }
 
-    protected void executeRecursive(Node parent, Iterator<Node> childrenIterator)
+    protected void executeRecursive(Node parent, Collection<Node> children)
     {
-        if ( childrenIterator == null ) return;
+        if ( children == null ) return;
+        List<Node> clonedChildren = null;
+        Iterator<Node> childrenIterator = children.iterator();
+        boolean mustCloneChildren = replaceOperationUsed && !(children instanceof List);
+        if ( mustCloneChildren )
+        {
+            clonedChildren = new ArrayList<>(children);
+            childrenIterator = clonedChildren.listIterator();
+        }
+        else if ( children instanceof List )
+        {
+            childrenIterator = ((List) children).listIterator();
+        }
 
         while ( childrenIterator.hasNext() )
         {
@@ -140,11 +155,18 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
             wrapper.setParentPath(parentPath);
             wrapper.setCurrentPath(currentPath);
 
-            executeOperations(topDownOperationArguments, parent, object, wrapper, childrenIterator);
+            executeOperations(topDownOperationDataHolders, parent, object, wrapper, childrenIterator);
             executeRecursionStep(object);
             currentPath = parentPath;
-            executeOperations(bottomUpOperationArguments, parent, object, wrapper, childrenIterator);
+            executeOperations(bottomUpOperationDataHolders, parent, object, wrapper, childrenIterator);
         }
+
+        if ( mustCloneChildren )
+        {
+            children.clear();
+            children.addAll(clonedChildren);
+        }
+
     }
 
     private void executeOperations(
@@ -152,8 +174,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
             Node parent,
             Node object,
             NodeWrapper<Node> wrapper,
-            Iterator<Node> childrenIterator
-    )
+            Iterator<Node> childrenIterator)
     {
         for ( OperationDataHolder operationDataHolder : operationDataHolderByExecutionMode )
         {
@@ -182,7 +203,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
                 operationDataHolder.getConsumer().accept(object);
                 break;
             case REPLACE:
-//                        iterator.set(operationDataHolder.getFunction().apply(object));
+                ((ListIterator<Node>) childrenIterator).set((Node) operationDataHolder.getReplaceFunction().apply(object));
                 break;
             case REMOVE:
                 childrenIterator.remove();
@@ -232,12 +253,17 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
                 && !operationDataHolder.testPrecondition(parent, object, currentPath);
     }
 
-    private void separateOperationArguments()
+    private void setupFlagsAndOperationDataHolders()
     {
         Map<String, ExecutionMode> executionModeMap = new HashMap<>();
-        for ( OperationDataHolder operationArgument : operationArguments )
+        for ( OperationDataHolder operationDataHolder : operationDataHolders )
         {
-            ExecutionMode executionMode = operationArgument.getByScope(
+            if ( Operation.REPLACE.equals(operationDataHolder.getOperation()) )
+            {
+                replaceOperationUsed = true;
+            }
+
+            ExecutionMode executionMode = operationDataHolder.getByScope(
                     OperationDataHolder::getExecutionMode,
                     this.executionMode,
                     executionModeMap
@@ -246,10 +272,10 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
             switch ( executionMode )
             {
                 case TOP_DOWN:
-                    topDownOperationArguments.add(operationArgument);
+                    topDownOperationDataHolders.add(operationDataHolder);
                     break;
                 case BOTTOM_UP:
-                    bottomUpOperationArguments.add(operationArgument);
+                    bottomUpOperationDataHolders.add(operationDataHolder);
                     break;
             }
         }

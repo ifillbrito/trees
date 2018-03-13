@@ -28,15 +28,18 @@ public class EditOperationImpl<Node, Precondition extends OperationPrecondition>
     }
 
     @Override
-    public Precondition replace(Function<Node, ?> function)
+    public Precondition replace(Function<Node, ?> replaceFunction)
     {
-        return null;
+        arguments.setOperation(Operation.REPLACE);
+        arguments.setReplaceFunction(replaceFunction);
+        return (Precondition) precondition;
     }
 
     @Override
     public Precondition remove()
     {
-        return null;
+        arguments.setOperation(Operation.REMOVE);
+        return (Precondition) precondition;
     }
 
     @Override

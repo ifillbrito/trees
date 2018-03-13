@@ -1,14 +1,17 @@
 package com.github.ifillbrito.tree.iterator;
 
+import com.github.ifillbrito.tree.iterator.builder.NodeBuilder;
 import com.github.ifillbrito.tree.iterator.domain.Node;
 import com.github.ifillbrito.tree.iterator.impl.NodeIterator;
 import com.github.ifillbrito.tree.operation.ExecutionMode;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Created by gjib on 09.03.18.
  */
-public class NodeIteratorTest extends AbstractNodeIteratorTest
+public class NodeIteratorEditTest extends AbstractNodeIteratorTest
 {
     @Test
     public void modify()
@@ -28,6 +31,54 @@ public class NodeIteratorTest extends AbstractNodeIteratorTest
 
         // -- then
         assertValues(root, 4, 40, 44, 48, 52, 80, 84, 88);
+    }
+
+    @Test
+    public void replace()
+    {
+        // -- given
+        Node root = createTree();
+        Node newNode = new NodeBuilder()
+                .withName("new node")
+                .withValue(25)
+                .build();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .edit()
+                    .forAll(node -> node.getValue().equals(22))
+                    .replace(node -> newNode)
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertValues(root, 1, 10, 11, 12, 13, 20, 21, 25);
+        assertEquals("new node", root.getChildren().get(1).getChildren().get(1).getName());
+    }
+
+    @Test
+    public void remove()
+    {
+        // -- given
+        Node root = createTree();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .edit()
+                    .forAll(node -> node.getValue().equals(10))
+                    .remove()
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertEquals((Integer)1, root.getValue());
+        assertEquals((Integer)20, root.getChildren().get(0).getValue());
+        assertEquals((Integer)21, root.getChildren().get(0).getChildren().get(0).getValue());
+        assertEquals((Integer)22, root.getChildren().get(0).getChildren().get(1).getValue());
     }
 
     @Test
