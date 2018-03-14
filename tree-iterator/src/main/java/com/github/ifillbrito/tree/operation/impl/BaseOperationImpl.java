@@ -20,15 +20,10 @@ public class BaseOperationImpl<Precondition extends OperationPrecondition, Opera
     }
 
     @Override
-    public Precondition skipOne()
+    public Precondition ignore()
     {
-        return null;
-    }
-
-    @Override
-    public Precondition skipTree()
-    {
-        return null;
+        operationDataHolder.setOperation(Operation.IGNORE);
+        return (Precondition) precondition;
     }
 
     @Override
@@ -36,6 +31,12 @@ public class BaseOperationImpl<Precondition extends OperationPrecondition, Opera
     {
         operationDataHolder.setOperation(Operation.FILTER);
         return (Precondition) precondition;
+    }
+
+    @Override
+    public Precondition skip()
+    {
+        return null;
     }
 
     @Override

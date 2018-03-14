@@ -8,7 +8,7 @@ public enum Operation
     MODIFY,
     REPLACE,
     REMOVE,
-    SKIP_ONE,
-    SKIP_TREE,
-    FILTER
+    IGNORE,
+    FILTER,
+    SKIP
 }

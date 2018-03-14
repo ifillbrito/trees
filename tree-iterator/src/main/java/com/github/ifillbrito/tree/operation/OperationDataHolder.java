@@ -235,11 +235,6 @@ public class OperationDataHolder
         this.executionMode = executionMode;
     }
 
-    public boolean testPrecondition(NodeWrapper wrapper)
-    {
-        return testPrecondition(wrapper.getParent(), wrapper, wrapper.getCurrentPath());
-    }
-
     public boolean testPrecondition(Object parent, Object object, String path)
     {
         switch ( preconditionType )

@@ -190,8 +190,8 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     {
         for ( OperationDataHolder operationDataHolder : operationDataHolderByExecutionMode )
         {
-            if ( isTargetNodeWrapper(wrapper, operationDataHolder) ||
-                    isTargetNode(parent, object, operationDataHolder) )
+            if ( (!isTargetNodeWrapper(wrapper, operationDataHolder) &&
+                    !isTargetNode(parent, object, operationDataHolder)) )
             {
                 continue;
             }
@@ -339,13 +339,20 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     private boolean isTargetNodeWrapper(NodeWrapper<Node> wrapper, OperationDataHolder operationDataHolder)
     {
         return operationDataHolder.isParentResolutionEnabledForPrecondition()
-                && !operationDataHolder.testPrecondition(wrapper);
+                && isTargetNodeInternal(wrapper.getParent(), wrapper, wrapper.getCurrentPath(), operationDataHolder);
     }
 
     private boolean isTargetNode(Node parent, Node object, OperationDataHolder operationDataHolder)
     {
         return !operationDataHolder.isParentResolutionEnabledForPrecondition()
-                && !operationDataHolder.testPrecondition(parent, object, currentPath);
+                && isTargetNodeInternal(parent, object, currentPath, operationDataHolder);
+    }
+
+    private boolean isTargetNodeInternal(Object parent, Object object, String currentPath, OperationDataHolder operationDataHolder)
+    {
+        return operationDataHolder.testPrecondition(parent, object, currentPath)
+                && isItemFiltered(parent, object, operationDataHolder)
+                && !isItemIgnored(parent, object, operationDataHolder);
     }
 
     private void setupFlagsAndOperationDataHolders()
@@ -356,13 +363,6 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
             if ( Operation.REPLACE.equals(operationDataHolder.getOperation()) )
             {
                 replaceOperationUsed = true;
-            }
-
-            if ( Operation.FILTER.equals(operationDataHolder.getOperation()))
-            {
-                // TODO: concatenate predicates
-                // 1. create precondition data holder
-                // 2. create concatenation method in data holder
             }
 
             ExecutionMode executionMode = operationDataHolder.getByScope(
@@ -381,6 +381,35 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
                     break;
             }
         }
+    }
+
+    private boolean isItemFiltered(Object parent, Object object, OperationDataHolder operationDataHolder)
+    {
+        return isRegisteredBeforeCurrentOperation(Operation.FILTER, parent, object, operationDataHolder, true);
+    }
+
+    private boolean isItemIgnored(Object parent, Object object, OperationDataHolder operationDataHolder)
+    {
+        return isRegisteredBeforeCurrentOperation(Operation.IGNORE, parent, object, operationDataHolder, false);
+    }
+
+    private boolean isRegisteredBeforeCurrentOperation(Operation operation, Object parent, Object object, OperationDataHolder currentOperationDataHolder, boolean defaultValue)
+    {
+        boolean operationFound = false;
+        for ( int i = operationDataHolders.indexOf(currentOperationDataHolder); i >= 0; i-- )
+        {
+            OperationDataHolder operationDataHolder = this.operationDataHolders.get(i);
+            boolean operationMatches = operationDataHolder.getOperation().equals(operation);
+            if ( !operationFound && operationMatches )
+            {
+                operationFound = true;
+            }
+            if ( operationMatches && operationDataHolder.testPrecondition(parent, object, currentPath) )
+            {
+                return true;
+            }
+        }
+        return !operationFound && defaultValue;
     }
 
 }

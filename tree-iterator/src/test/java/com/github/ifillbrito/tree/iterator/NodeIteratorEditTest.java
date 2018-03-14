@@ -78,6 +78,74 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
     }
 
     @Test
+    public void filter_resolvingParents()
+    {
+        // -- given
+        Node root = createTree();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .edit()
+                    .resolveParents()
+                    .forAll(wrapper -> wrapper.getNode().isEven())
+                    .filter()
+                    .forAll()
+                    .apply(node -> node.setValue( x -> x * 4 ))
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertValues(root, 1, 40, 11, 48, 13, 80, 21, 88);
+    }
+
+    @Test
+    public void ignore()
+    {
+        // -- given
+        Node root = createTree();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .edit()
+                    .forAll(node -> !node.isEven())
+                    .ignore()
+                    .forAll()
+                    .apply(node -> node.setValue( x -> x * 4 ))
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertValues(root, 1, 40, 11, 48, 13, 80, 21, 88);
+    }
+
+    @Test
+    public void ignore_resolvingParents()
+    {
+        // -- given
+        Node root = createTree();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .edit()
+                    .resolveParents()
+                    .forAll(wrapper -> !wrapper.getNode().isEven())
+                    .ignore()
+                    .forAll()
+                    .apply(node -> node.setValue( x -> x * 4 ))
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertValues(root, 1, 40, 11, 48, 13, 80, 21, 88);
+    }
+
+    @Test
     public void replace()
     {
         // -- given

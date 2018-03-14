@@ -6,11 +6,11 @@ package com.github.ifillbrito.tree.operation;
 public interface BaseOperation<Precondition extends OperationPrecondition, Operation extends BaseOperation>
 {
     // The following methods affect the recursive iteration within the corresponding scope
-    Precondition skipOne();
-
-    Precondition skipTree();
+    Precondition ignore();
 
     Precondition filter();
+
+    Precondition skip();
 
     // The following methods only affect the next operation
     Operation take(int maxCount);
