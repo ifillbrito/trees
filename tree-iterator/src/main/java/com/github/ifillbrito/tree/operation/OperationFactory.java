@@ -18,8 +18,12 @@ public class OperationFactory
                 return new EditOperationImpl(arguments, precondition);
             case ITERATE:
                 return new IterateOperationImpl(arguments, precondition);
-            default: //case COLLECT:
+            case COLLECT_AS_LIST:
+            case COLLECT_AS_MAP:
+            case GROUP:
                 return new CollectOperationImpl(arguments, precondition);
+            default:
+                return null;
         }
     }
 }

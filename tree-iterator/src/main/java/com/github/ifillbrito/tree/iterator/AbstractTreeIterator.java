@@ -60,9 +60,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
 
     private <Item, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition createOperationPrecondition(Collection<Item> collection)
     {
-        OperationDataHolder operationDataHolder = new OperationDataHolder(OperationType.COLLECT, collectScopeCounter++, classType);
-        operationDataHolder.setOperation(Operation.COLLECT_AS_LIST);
-        operationDataHolders.add(operationDataHolder);
+        OperationDataHolder operationDataHolder = new OperationDataHolder(OperationType.COLLECT_AS_LIST, collectScopeCounter++, classType);
         this.collection = collection;
         return (Precondition) new OperationPreconditionImpl<
                 Node,
@@ -72,7 +70,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
                         CollectOperation<Node, Precondition>,
                         Precondition
                         >
-                >(operationDataHolder, this);
+                >(operationDataHolder, operationDataHolders, this);
     }
 
     @Override
@@ -90,9 +88,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
 
     private <Key, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition createOperationPrecondition(Map<Key, ?> map, Function<Node, Key> mapKeySupplier)
     {
-        OperationDataHolder operationDataHolder = new OperationDataHolder(OperationType.COLLECT, collectScopeCounter++, classType);
-        operationDataHolder.setOperation(Operation.COLLECT_AS_MAP);
-        operationDataHolders.add(operationDataHolder);
+        OperationDataHolder operationDataHolder = new OperationDataHolder(OperationType.COLLECT_AS_MAP, collectScopeCounter++, classType);
         this.map = map;
         this.mapKeyFunction = mapKeySupplier;
         return (Precondition) new OperationPreconditionImpl<
@@ -103,7 +99,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
                         CollectOperation<Node, Precondition>,
                         Precondition
                         >
-                >(operationDataHolder, this);
+                >(operationDataHolder, operationDataHolders, this);
     }
 
     @Override
@@ -121,9 +117,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
 
     private <Key, Item, ListOrSet extends Collection<Item>, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition createOperationPrecondition(Map<Key, ListOrSet> map, Function<Node, Key> mapKeySupplier, Supplier<ListOrSet> collectionSupplier)
     {
-        OperationDataHolder operationDataHolder = new OperationDataHolder(OperationType.COLLECT, collectScopeCounter++, classType);
-        operationDataHolder.setOperation(Operation.GROUP);
-        operationDataHolders.add(operationDataHolder);
+        OperationDataHolder operationDataHolderTemplate = new OperationDataHolder(OperationType.GROUP, collectScopeCounter++, classType);
         this.map = map;
         this.mapKeyFunction = mapKeySupplier;
         this.collectionSupplier = collectionSupplier;
@@ -135,7 +129,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
                         CollectOperation<Node, Precondition>,
                         Precondition
                         >
-                >(operationDataHolder, this);
+                >(operationDataHolderTemplate, operationDataHolders, this);
     }
 
     @Override
@@ -148,7 +142,6 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     public <Precondition extends OperationPrecondition<Node, EditOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, EditOperation<Node, Precondition>, Precondition>>> Precondition edit()
     {
         OperationDataHolder arguments = new OperationDataHolder(OperationType.EDIT, editScopeCounter++, classType);
-        operationDataHolders.add(arguments);
         return (Precondition) new OperationPreconditionImpl<
                 Node,
                 EditOperation<Node, Precondition>,
@@ -156,7 +149,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
                         NodeWrapper<Node>,
                         EditOperation<Node, Precondition>,
                         Precondition>
-                >(arguments, this);
+                >(arguments, operationDataHolders, this);
     }
 
     @Override
@@ -264,18 +257,28 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
 
     private void executeOperation(Object object, OperationDataHolder operationDataHolder, Iterator<Node> childrenIterator)
     {
-        switch ( operationDataHolder.getOperation() )
+        switch ( operationDataHolder.getOperationType() )
         {
-            case MODIFY:
-                operationDataHolder.getConsumer().accept(object);
-                break;
-            case REPLACE:
-                ((ListIterator<Node>) childrenIterator).set((Node) operationDataHolder.getReplaceFunction().apply(object));
-                break;
-            case REMOVE:
-                childrenIterator.remove();
+
+            case EDIT:
+            {
+                switch ( operationDataHolder.getOperation() )
+                {
+                    case MODIFY:
+                        operationDataHolder.getConsumer().accept(object);
+                        break;
+                    case REPLACE:
+                        ((ListIterator<Node>) childrenIterator).set((Node) operationDataHolder.getReplaceFunction().apply(object));
+                        break;
+                    case REMOVE:
+                        childrenIterator.remove();
+                        break;
+                }
+            }
+            case ITERATE:
                 break;
             case COLLECT_AS_LIST:
+            {
                 if ( valueTransformer != null )
                 {
                     collection.add(valueTransformer.apply(object));
@@ -285,7 +288,9 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
                     collection.add(object);
                 }
                 break;
+            }
             case COLLECT_AS_MAP:
+            {
                 if ( valueTransformer != null )
                 {
                     map.put(mapKeyFunction.apply(object), valueTransformer.apply(object));
@@ -295,7 +300,9 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
                     map.put(mapKeyFunction.apply(object), object);
                 }
                 break;
+            }
             case GROUP:
+            {
                 map.putIfAbsent(mapKeyFunction.apply(object), collectionSupplier.get());
                 Collection collection = (Collection) map.get(mapKeyFunction.apply(object));
                 if ( valueTransformer != null )
@@ -306,7 +313,8 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
                 {
                     collection.add(object);
                 }
-                break;
+            }
+            break;
         }
     }
 

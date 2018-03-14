@@ -34,6 +34,28 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
     }
 
     @Test
+    public void modify_multipleOperations()
+    {
+        // -- given
+        Node root = createTree();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .edit()
+                    .forAll(node -> node.isEven())
+                    .apply(node -> node.setValue( x -> x * 4))
+                    .forAll(node -> !node.isEven())
+                    .apply(node -> node.setValue( x -> x + 1 ))
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertValues(root, 2, 40, 12, 48, 14, 80, 22, 88);
+    }
+
+    @Test
     public void replace()
     {
         // -- given

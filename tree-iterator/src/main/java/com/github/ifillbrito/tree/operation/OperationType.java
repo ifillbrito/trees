@@ -7,7 +7,9 @@ public enum OperationType
 {
     EDIT("edit"),
     ITERATE("iterate"),
-    COLLECT("collect");
+    COLLECT_AS_LIST("collectAsList"),
+    COLLECT_AS_MAP("collectAsMap"),
+    GROUP("group");
 
     private String scopePrefix;
 

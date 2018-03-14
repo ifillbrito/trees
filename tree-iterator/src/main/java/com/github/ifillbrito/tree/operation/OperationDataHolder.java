@@ -39,6 +39,25 @@ public class OperationDataHolder
     private BiPredicate nodeAndPathPredicate;
     private TriPredicate parentAndNodeAndPathPredicate;
 
+    public OperationDataHolder(OperationDataHolder other)
+    {
+        this.scope = other.scope;
+        this.executionMode = other.executionMode;
+        this.operationType = other.operationType;
+        this.operation = other.operation;
+        this.consumer = other.consumer;
+        this.replaceFunction = other.replaceFunction;
+        this.classType = other.classType;
+        this.parentResolutionEnabledForPrecondition = other.parentResolutionEnabledForPrecondition;
+        this.parentResolutionEnabledForOperation = other.parentResolutionEnabledForOperation;
+        this.preconditionType = other.preconditionType;
+        this.pathRegex = other.pathRegex;
+        this.pathPredicate = other.pathPredicate;
+        this.nodePredicate = other.nodePredicate;
+        this.nodeAndPathPredicate = other.nodeAndPathPredicate;
+        this.parentAndNodeAndPathPredicate = other.parentAndNodeAndPathPredicate;
+    }
+
     public OperationDataHolder(OperationType operationType, int scopeCounter, Class classType)
     {
         String scope = operationType.getScopePrefix() + scopeCounter;
@@ -233,8 +252,10 @@ public class OperationDataHolder
                 return testParentAndNodeAndPathPredicate(parent, object, path);
             case FOR_ALL_PATH_REGEX:
                 return testPathRegex(object, path);
-            default: //case FOR_ALL_PATH_PREDICATE:
+            case FOR_ALL_PATH_PREDICATE:
                 return testPathPredicate(object, path);
+            default:
+                return false;
         }
     }
 
