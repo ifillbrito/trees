@@ -271,33 +271,17 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
 
     private <Item, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition createOperationPrecondition(Collection<Item> collection)
     {
-        OperationDataHolder operationDataHolder = new OperationDataHolder(OperationType.COLLECT_AS_LIST, collectScopeCounter++, classType);
+        OperationDataHolder operationDataHolderTemplate = new OperationDataHolder(OperationType.COLLECT_AS_LIST, collectScopeCounter++, classType);
         this.collection = collection;
-        return (Precondition) new OperationPreconditionImpl<
-                Node,
-                CollectOperation<Node, Precondition>,
-                OperationPrecondition<
-                        NodeWrapper<Node>,
-                        CollectOperation<Node, Precondition>,
-                        Precondition
-                        >
-                >(operationDataHolder, operationDataHolders, this);
+        return createPreconditionForCollectOperation(operationDataHolderTemplate);
     }
 
     private <Key, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition createOperationPrecondition(Map<Key, ?> map, Function<Node, Key> mapKeySupplier)
     {
-        OperationDataHolder operationDataHolder = new OperationDataHolder(OperationType.COLLECT_AS_MAP, collectScopeCounter++, classType);
+        OperationDataHolder operationDataHolderTemplate = new OperationDataHolder(OperationType.COLLECT_AS_MAP, collectScopeCounter++, classType);
         this.map = map;
         this.mapKeyFunction = mapKeySupplier;
-        return (Precondition) new OperationPreconditionImpl<
-                Node,
-                CollectOperation<Node, Precondition>,
-                OperationPrecondition<
-                        NodeWrapper<Node>,
-                        CollectOperation<Node, Precondition>,
-                        Precondition
-                        >
-                >(operationDataHolder, operationDataHolders, this);
+        return createPreconditionForCollectOperation(operationDataHolderTemplate);
     }
 
     private <Key, Item, ListOrSet extends Collection<Item>, Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition createOperationPrecondition(Map<Key, ListOrSet> map, Function<Node, Key> mapKeySupplier, Supplier<ListOrSet> collectionSupplier)
@@ -306,6 +290,11 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
         this.map = map;
         this.mapKeyFunction = mapKeySupplier;
         this.collectionSupplier = collectionSupplier;
+        return createPreconditionForCollectOperation(operationDataHolderTemplate);
+    }
+
+    private <Precondition extends OperationPrecondition<Node, CollectOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, CollectOperation<Node, Precondition>, Precondition>>> Precondition createPreconditionForCollectOperation(OperationDataHolder operationDataHolderTemplate)
+    {
         return (Precondition) new OperationPreconditionImpl<
                 Node,
                 CollectOperation<Node, Precondition>,
