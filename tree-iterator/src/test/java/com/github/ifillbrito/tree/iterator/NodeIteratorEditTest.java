@@ -43,7 +43,7 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
         //@formatter:off
         new NodeIterator(root)
                 .edit()
-                    .forAll(node -> node.isEven())
+                    .forAll(Node::isEven)
                     .apply(node -> node.setValue( x -> x * 4))
                     .forAll(node -> !node.isEven())
                     .apply(node -> node.setValue( x -> x + 1 ))
@@ -53,6 +53,28 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
 
         // -- then
         assertValues(root, 2, 40, 12, 48, 14, 80, 22, 88);
+    }
+
+    @Test
+    public void filter()
+    {
+        // -- given
+        Node root = createTree();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .edit()
+                    .forAll(Node::isEven)
+                    .filter()
+                    .forAll()
+                    .apply(node -> node.setValue( x -> x * 4 ))
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertValues(root, 1, 40, 11, 48, 13, 80, 21, 88);
     }
 
     @Test

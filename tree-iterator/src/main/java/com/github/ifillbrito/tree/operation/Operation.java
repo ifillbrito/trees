@@ -10,8 +10,5 @@ public enum Operation
     REMOVE,
     SKIP_ONE,
     SKIP_TREE,
-    FILTER,
-    COLLECT_AS_LIST,
-    COLLECT_AS_MAP,
-    GROUP
+    FILTER
 }

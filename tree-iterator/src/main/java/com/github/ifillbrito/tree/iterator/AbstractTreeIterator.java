@@ -259,7 +259,6 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     {
         switch ( operationDataHolder.getOperationType() )
         {
-
             case EDIT:
             {
                 switch ( operationDataHolder.getOperation() )
@@ -357,6 +356,13 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
             if ( Operation.REPLACE.equals(operationDataHolder.getOperation()) )
             {
                 replaceOperationUsed = true;
+            }
+
+            if ( Operation.FILTER.equals(operationDataHolder.getOperation()))
+            {
+                // TODO: concatenate predicates
+                // 1. create precondition data holder
+                // 2. create concatenation method in data holder
             }
 
             ExecutionMode executionMode = operationDataHolder.getByScope(

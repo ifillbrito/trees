@@ -1,6 +1,7 @@
 package com.github.ifillbrito.tree.operation.impl;
 
 import com.github.ifillbrito.tree.operation.BaseOperation;
+import com.github.ifillbrito.tree.operation.Operation;
 import com.github.ifillbrito.tree.operation.OperationDataHolder;
 import com.github.ifillbrito.tree.operation.OperationPrecondition;
 
@@ -33,6 +34,7 @@ public class BaseOperationImpl<Precondition extends OperationPrecondition, Opera
     @Override
     public Precondition filter()
     {
+        operationDataHolder.setOperation(Operation.FILTER);
         return (Precondition) precondition;
     }
 
