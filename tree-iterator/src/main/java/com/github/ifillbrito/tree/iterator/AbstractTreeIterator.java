@@ -194,7 +194,14 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
         boolean skipTree = false;
         for ( OperationDataHolder operationDataHolder : operationDataHolderByExecutionMode )
         {
+            if ( !isNodeWrapperFiltered(wrapper, operationDataHolder) &&
+                    !isNodeFiltered(parent, object, operationDataHolder) )
+            {
+                continue;
+            }
+
             operationDataHolder.increaseTakeCounter();
+
             if ( isTreeNodeWrapperSkipped(wrapper, operationDataHolder) ||
                     isTreeNodeSkipped(parent, object, operationDataHolder) )
             {
@@ -353,8 +360,19 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     private boolean isTargetNodeInternal(Object parent, Object object, String currentPath, OperationDataHolder operationDataHolder)
     {
         return operationDataHolder.testPrecondition(parent, object, currentPath)
-                && isItemFiltered(parent, object, operationDataHolder)
                 && !isItemIgnored(parent, object, operationDataHolder);
+    }
+
+    private boolean isNodeWrapperFiltered(NodeWrapper<Node> wrapper, OperationDataHolder operationDataHolder)
+    {
+        return operationDataHolder.isParentResolutionEnabledForPrecondition()
+                && isItemFiltered(wrapper.getParent(), wrapper, operationDataHolder);
+    }
+
+    private boolean isNodeFiltered(Node parent, Node object, OperationDataHolder operationDataHolder)
+    {
+        return !operationDataHolder.isParentResolutionEnabledForPrecondition()
+                && isItemFiltered(parent, object, operationDataHolder);
     }
 
     private boolean isTreeNodeWrapperSkipped(NodeWrapper<Node> wrapper, OperationDataHolder operationDataHolder)

@@ -96,7 +96,7 @@ public class NodeIteratorIterateTest extends AbstractNodeIteratorTest
         new NodeIterator(root)
                 .iterate()
                     .forAll(Node::isEven)
-                    .take(4)
+                    .take(2)
                     .filter()
                     .end()
                 .edit()

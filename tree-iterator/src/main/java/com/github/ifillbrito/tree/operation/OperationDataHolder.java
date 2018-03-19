@@ -285,7 +285,6 @@ public class OperationDataHolder
     {
         if ( takeCounter != null )
         {
-//            takeCounter++;
             return takeMaxCount >= takeCounter
                     || (takeOccurrenceFrom <= takeCounter && takeCounter <= takeOccurrenceTo);
         }
