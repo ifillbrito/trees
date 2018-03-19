@@ -3,7 +3,6 @@ package com.github.ifillbrito.tree.iterator;
 import com.github.ifillbrito.tree.iterator.builder.NodeBuilder;
 import com.github.ifillbrito.tree.iterator.domain.Node;
 import com.github.ifillbrito.tree.iterator.impl.NodeIterator;
-import com.github.ifillbrito.tree.operation.ExecutionMode;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -202,12 +201,14 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
         // -- when
         //@formatter:off
         new NodeIterator(root)
-                /*
-                    Operation: select the nodes which value is higher than 20 and
-                    multiply the parent by a factor of 2.
-                    Result of top down execution: only the direct parent is affected.
-                 */
-                .setExecution(ExecutionMode.TOP_DOWN)
+                .iterate()
+                    /*
+                        Operation: select the nodes which value is higher than 20 and
+                        multiply the parent by a factor of 2.
+                        Result of top down execution: only the direct parent is affected.
+                     */
+                    .topDownExecution()
+                    .end()
                 .edit()
                     .forAll(node -> node.getValue() > 20)
                     .resolveParents()
@@ -229,12 +230,14 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
         // -- when
         //@formatter:off
         new NodeIterator(root)
-                /*
-                    Operation: select the nodes which value is higher than 20 and
-                    multiply the parent by a factor of 2.
-                    Result of buttom up execution: all ascendants are affected.
-                 */
-                .setExecution(ExecutionMode.BOTTOM_UP)
+                .iterate()
+                    /*
+                        Operation: select the nodes which value is higher than 20 and
+                        multiply the parent by a factor of 2.
+                        Result of bottom up execution: all ascendants are affected.
+                     */
+                    .bottomUpExecution()
+                    .end()
                 .edit()
                     .forAll(node -> node.getValue() > 20)
                     .resolveParents()

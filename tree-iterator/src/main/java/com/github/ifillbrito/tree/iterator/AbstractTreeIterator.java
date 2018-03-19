@@ -23,7 +23,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     private LinkedList<OperationDataHolder> topDownOperationDataHolders = new LinkedList<>();
     private LinkedList<OperationDataHolder> bottomUpOperationDataHolders = new LinkedList<>();
     private Map<Node, NodeWrapper<Node>> nodeWrapperMap = new HashMap<>();
-    private ExecutionMode executionMode = DEFAULT_EXECUTION_MODE;
+    private ExecutionMode executionMode;
 
     // data holders
     private String currentPath = EMPTY_PATH;
@@ -42,6 +42,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
         TreeNodeUtils.verifyNotNull(node);
         this.node = node;
         this.classType = node.getClass();
+        this.executionMode = DEFAULT_EXECUTION_MODE;
     }
 
 
@@ -87,13 +88,21 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     @Override
     public <Precondition extends OperationPrecondition<Node, IterateOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, IterateOperation<Node, Precondition>, Precondition>>> Precondition iterate()
     {
-        return null;
+        OperationDataHolder operationDataHolder = new OperationDataHolder(OperationType.ITERATE, iterateScopeCounter++, classType);
+        return (Precondition) new OperationPreconditionImpl<
+                Node,
+                IterateOperation<Node, Precondition>,
+                OperationPrecondition<
+                        NodeWrapper<Node>,
+                        IterateOperation<Node, Precondition>,
+                        Precondition>
+                >(operationDataHolder, operationDataHolders, this);
     }
 
     @Override
     public <Precondition extends OperationPrecondition<Node, EditOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, EditOperation<Node, Precondition>, Precondition>>> Precondition edit()
     {
-        OperationDataHolder arguments = new OperationDataHolder(OperationType.EDIT, editScopeCounter++, classType);
+        OperationDataHolder operationDataHolder = new OperationDataHolder(OperationType.EDIT, editScopeCounter++, classType);
         return (Precondition) new OperationPreconditionImpl<
                 Node,
                 EditOperation<Node, Precondition>,
@@ -101,7 +110,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
                         NodeWrapper<Node>,
                         EditOperation<Node, Precondition>,
                         Precondition>
-                >(arguments, operationDataHolders, this);
+                >(operationDataHolder, operationDataHolders, this);
     }
 
     @Override
@@ -114,13 +123,6 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     public <T> TreeIterator<T> use(Class<T> type)
     {
         return null;
-    }
-
-    @Override
-    public TreeIterator<Node> setExecution(ExecutionMode executionMode)
-    {
-        this.executionMode = executionMode;
-        return this;
     }
 
     @Override
@@ -352,6 +354,14 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
             if ( Operation.REPLACE.equals(operationDataHolder.getOperation()) )
             {
                 replaceOperationUsed = true;
+            }
+
+            if ( OperationType.ITERATE.equals(operationDataHolder.getOperationType()) )
+            {
+                if (operationDataHolder.getExecutionMode() != null )
+                {
+                    this.executionMode = operationDataHolder.getExecutionMode();
+                }
             }
 
             ExecutionMode executionMode = operationDataHolder.getByScope(

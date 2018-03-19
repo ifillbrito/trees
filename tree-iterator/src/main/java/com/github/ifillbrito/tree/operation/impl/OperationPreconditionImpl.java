@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 /**
  * Created by gjib on 09.03.18.
  */
-public class OperationPreconditionImpl<Node, Operation extends BaseOperation, Precondition extends OperationPrecondition> implements OperationPrecondition<Node, Operation, Precondition>
+public class OperationPreconditionImpl<Node, Op extends BaseOperation, Precondition extends OperationPrecondition> implements OperationPrecondition<Node, Op, Precondition>
 {
     protected final OperationDataHolder operationDataHolderTemplate;
     protected final TreeIterator<Node> treeIterator;
@@ -25,76 +25,68 @@ public class OperationPreconditionImpl<Node, Operation extends BaseOperation, Pr
     }
 
     @Override
-    public Operation forAll()
+    public Op forAll()
     {
-        OperationDataHolder operation = new OperationDataHolder(operationDataHolderTemplate);
-        operationDataHolders.add(operation);
-        operation.setPreconditionType(OperationPreconditionType.FOR_ALL);
+        OperationDataHolder operation = createOperationDataHolder(OperationPreconditionType.FOR_ALL);
         operation.setNodePredicate(node -> true);
-        return (Operation) OperationFactory.createOperation(operation, this);
+        return (Op) OperationFactory.createOperation(operation, this);
     }
 
     @Override
-    public Operation forAll(Predicate<Node> precondition)
+    public Op forAll(Predicate<Node> precondition)
     {
-        OperationDataHolder operation = new OperationDataHolder(operationDataHolderTemplate);
-        operationDataHolders.add(operation);
-        operation.setPreconditionType(OperationPreconditionType.FOR_ALL);
+        OperationDataHolder operation = createOperationDataHolder(OperationPreconditionType.FOR_ALL);
         operation.setNodePredicate(precondition);
-        return (Operation) OperationFactory.createOperation(operation, this);
+        return (Op) OperationFactory.createOperation(operation, this);
     }
 
     @Override
-    public Operation forAll(BiPredicate<Node, String> precondition)
+    public Op forAll(BiPredicate<Node, String> precondition)
     {
-        OperationDataHolder operation = new OperationDataHolder(operationDataHolderTemplate);
-        operationDataHolders.add(operation);
-        operation.setPreconditionType(OperationPreconditionType.FOR_ALL_BI_PREDICATE);
+        OperationDataHolder operation = createOperationDataHolder(OperationPreconditionType.FOR_ALL_BI_PREDICATE);
         operation.setNodeAndPathPredicate(precondition);
-        return (Operation) OperationFactory.createOperation(operation, this);
+        return (Op) OperationFactory.createOperation(operation, this);
     }
 
     @Override
-    public Operation forAll(TriPredicate<Node, Node, String> precondition)
+    public Op forAll(TriPredicate<Node, Node, String> precondition)
     {
-        OperationDataHolder operation = new OperationDataHolder(operationDataHolderTemplate);
-        operationDataHolders.add(operation);
-        operation.setPreconditionType(OperationPreconditionType.FOR_ALL_TRI_PREDICATE);
+        OperationDataHolder operation = createOperationDataHolder(OperationPreconditionType.FOR_ALL_TRI_PREDICATE);
         operation.setParentAndNodeAndPathPredicate(precondition);
-        return (Operation) OperationFactory.createOperation(operation, this);
+        return (Op) OperationFactory.createOperation(operation, this);
     }
 
     @Override
-    public Operation forPath(String pathRegex)
+    public Op forPath(String pathRegex)
     {
-        OperationDataHolder operation = new OperationDataHolder(operationDataHolderTemplate);
-        operationDataHolders.add(operation);
-        operation.setPreconditionType(OperationPreconditionType.FOR_ALL_PATH_REGEX);
+        OperationDataHolder operation = createOperationDataHolder(OperationPreconditionType.FOR_ALL_PATH_REGEX);
         operation.setPathRegex(pathRegex);
-        return (Operation) OperationFactory.createOperation(operation, this);
+        return (Op) OperationFactory.createOperation(operation, this);
     }
 
     @Override
-    public Operation forPath(Predicate<String> precondition)
+    public Op forPath(Predicate<String> precondition)
     {
-        OperationDataHolder operation = new OperationDataHolder(operationDataHolderTemplate);
-        operationDataHolders.add(operation);
-        operation.setPreconditionType(OperationPreconditionType.FOR_ALL_PATH_PREDICATE);
+        OperationDataHolder operation = createOperationDataHolder(OperationPreconditionType.FOR_ALL_PATH_PREDICATE);
         operation.setPathPredicate(precondition);
-        return (Operation) OperationFactory.createOperation(operation, this);
+        return (Op) OperationFactory.createOperation(operation, this);
     }
 
     @Override
-    public OperationPrecondition<Node, Operation, Precondition> topDownExecution()
+    public OperationPrecondition<Node, Op, Precondition> topDownExecution()
     {
-        operationDataHolderTemplate.setExecutionMode(ExecutionMode.TOP_DOWN);
+        OperationDataHolder operation = createOperationDataHolder(OperationPreconditionType.FOR_ALL);
+        setDefaultOperationForExecutionMode(operation);
+        operation.setExecutionMode(ExecutionMode.TOP_DOWN);
         return this;
     }
 
     @Override
-    public OperationPrecondition<Node, Operation, Precondition> bottomUpExecution()
+    public OperationPrecondition<Node, Op, Precondition> bottomUpExecution()
     {
-        operationDataHolderTemplate.setExecutionMode(ExecutionMode.BOTTOM_UP);
+        OperationDataHolder operation = createOperationDataHolder(OperationPreconditionType.FOR_ALL);
+        setDefaultOperationForExecutionMode(operation);
+        operation.setExecutionMode(ExecutionMode.BOTTOM_UP);
         return this;
     }
 
@@ -109,5 +101,20 @@ public class OperationPreconditionImpl<Node, Operation extends BaseOperation, Pr
     public TreeIterator<Node> end()
     {
         return treeIterator;
+    }
+
+
+    private OperationDataHolder createOperationDataHolder(OperationPreconditionType forAllBiPredicate)
+    {
+        OperationDataHolder operation = new OperationDataHolder(operationDataHolderTemplate);
+        operationDataHolders.add(operation);
+        operation.setPreconditionType(forAllBiPredicate);
+        return operation;
+    }
+
+    private void setDefaultOperationForExecutionMode(OperationDataHolder operation)
+    {
+        operation.setNodePredicate(node -> true);
+        operation.setOperation(Operation.FILTER);
     }
 }
