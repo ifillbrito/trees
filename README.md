@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/ifillbrito/trees.svg?branch=master)](https://travis-ci.org/ifillbrito/trees)
 [![codecov](https://codecov.io/gh/ifillbrito/trees/branch/master/graph/badge.svg)](https://codecov.io/gh/ifillbrito/trees)
 
-This library provides an abstract class that can be extended to enabled declarative manipulation of trees in existing objects.
+This library provides an abstract class that can be extended to enable declarative manipulation of trees in existing objects.
 
 ## Example:
 The following example shows some of the methods of the API (still in development). The conditions (``forAll``, ``forPath``) and functions (lambdas) used to manipulate the nodes were written arbitrarily, so the semantic described in this example might not make any sense. The goal at the moment is to see how the API looks like.
