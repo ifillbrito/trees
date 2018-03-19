@@ -52,6 +52,9 @@ public class OperationDataHolder
         this.operation = other.operation;
         this.consumer = other.consumer;
         this.replaceFunction = other.replaceFunction;
+        this.takeMaxCount = other.takeMaxCount;
+        this.takeOccurrenceFrom = other.takeOccurrenceFrom;
+        this.takeOccurrenceTo = other.takeOccurrenceTo;
         this.classType = other.classType;
         this.parentResolutionEnabledForPrecondition = other.parentResolutionEnabledForPrecondition;
         this.parentResolutionEnabledForOperation = other.parentResolutionEnabledForOperation;

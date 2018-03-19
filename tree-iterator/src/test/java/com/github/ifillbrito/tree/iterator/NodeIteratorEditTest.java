@@ -109,7 +109,7 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
         //@formatter:off
         new NodeIterator(root)
                 .edit()
-                    .forAll(node -> !node.isEven())
+                    .forAll(node -> node.getValue().equals(10))
                     .ignore()
                     .forAll()
                     .apply(node -> node.setValue( x -> x * 4 ))
@@ -118,7 +118,7 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 40, 11, 48, 13, 80, 21, 88);
+        assertValues(root, 1*4, 10, 11*4, 12*4, 13*4, 20*4, 21*4, 22*4);
     }
 
     @Test
@@ -132,7 +132,7 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
         new NodeIterator(root)
                 .edit()
                     .resolveParents()
-                    .forAll(wrapper -> !wrapper.getNode().isEven())
+                    .forAll(wrapper -> wrapper.getNode().getValue().equals(10))
                     .ignore()
                     .forAll()
                     .apply(node -> node.setValue( x -> x * 4 ))
@@ -141,7 +141,29 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 40, 11, 48, 13, 80, 21, 88);
+        assertValues(root, 1*4, 10, 11*4, 12*4, 13*4, 20*4, 21*4, 22*4);
+    }
+
+    @Test
+    public void skip()
+    {
+        // -- given
+        Node root = createTree();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .edit()
+                    .forAll(node -> node.getValue().equals(10))
+                    .skip()
+                    .forAll()
+                    .apply(node -> node.setValue( x -> x * 4 ))
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertValues(root, 1*4, 10, 11, 12, 13, 20*4, 21*4, 22*4);
     }
 
     @Test
