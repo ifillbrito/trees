@@ -167,6 +167,29 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
     }
 
     @Test
+    public void skip_resolvingParents()
+    {
+        // -- given
+        Node root = createTree();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .edit()
+                    .resolveParents()
+                    .forAll(wrapper -> wrapper.getNode().getValue().equals(10))
+                    .skip()
+                    .forAll()
+                    .apply(node -> node.setValue( x -> x * 4 ))
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertValues(root, 1 * 4, 10, 11, 12, 13, 20 * 4, 21 * 4, 22 * 4);
+    }
+
+    @Test
     public void replace()
     {
         // -- given

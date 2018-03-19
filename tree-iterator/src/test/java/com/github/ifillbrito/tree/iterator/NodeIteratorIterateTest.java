@@ -10,7 +10,7 @@ import org.junit.Test;
 public class NodeIteratorIterateTest extends AbstractNodeIteratorTest
 {
     @Test
-    public void iterate_forAll()
+    public void iterate_filter()
     {
         // -- given
         Node root = createTree();
@@ -43,7 +43,7 @@ public class NodeIteratorIterateTest extends AbstractNodeIteratorTest
         //@formatter:off
         new NodeIterator(root)
                 .iterate()
-                    .forAll(node -> !node.isEven())
+                    .forAll(node -> node.getValue().equals(10))
                     .ignore()
                     .forAll(node -> node.getValue().equals(20))
                     .ignore()
@@ -56,7 +56,33 @@ public class NodeIteratorIterateTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 10 * 4, 11, 12 * 4, 13, 20, 21, 22 * 4);
+        assertValues(root, 1 * 4, 10, 11 * 4, 12 * 4, 13 * 4, 20, 21 * 4, 22 * 4);
+    }
+
+    @Test
+    public void iterate_skip()
+    {
+        // -- given
+        Node root = createTree();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .iterate()
+                    .forAll(node -> node.getValue().equals(10))
+                    .skip()
+                    .forAll(node -> node.getValue().equals(20))
+                    .ignore()
+                    .end()
+                .edit()
+                    .forAll()
+                    .apply(node -> node.setValue( x -> x * 4 ))
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertValues(root, 1 * 4, 10, 11, 12, 13, 20, 21 * 4, 22 * 4);
     }
 
     @Test
