@@ -18,7 +18,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     protected static final String PATH_SEPARATOR = "/";
     protected static final String EMPTY_PATH = "";
     private Node node;
-    private int editScopeCounter, collectScopeCounter, iterateScopeCounter = 0;
+    private int editScopeCounter, collectScopeCounter = 0;
     private LinkedList<OperationDataHolder> operationDataHolders = new LinkedList<>();
     private LinkedList<OperationDataHolder> topDownOperationDataHolders = new LinkedList<>();
     private LinkedList<OperationDataHolder> bottomUpOperationDataHolders = new LinkedList<>();
@@ -88,7 +88,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     @Override
     public <Precondition extends OperationPrecondition<Node, IterateOperation<Node, Precondition>, OperationPrecondition<NodeWrapper<Node>, IterateOperation<Node, Precondition>, Precondition>>> Precondition iterate()
     {
-        OperationDataHolder operationDataHolder = new OperationDataHolder(OperationType.ITERATE, iterateScopeCounter++, classType);
+        OperationDataHolder operationDataHolder = new OperationDataHolder(OperationType.ITERATE, 0, classType);
         return (Precondition) new OperationPreconditionImpl<
                 Node,
                 IterateOperation<Node, Precondition>,
@@ -400,6 +400,9 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
             OperationDataHolder operationDataHolder = this.operationDataHolders.get(i);
             boolean operationMatches = operationDataHolder.getOperation().equals(operation);
             boolean scopeMatches = operationDataHolder.getScope().equals(currentOperationDataHolder.getScope());
+            // if not in scope, check the global scope
+            boolean globalScopeMatches = operationDataHolder.getScope().equals(OperationType.ITERATE.getScopePrefix() + "0");
+            scopeMatches = scopeMatches || globalScopeMatches;
             if ( !operationFound && operationMatches && scopeMatches )
             {
                 operationFound = true;
