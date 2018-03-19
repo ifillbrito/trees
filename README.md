@@ -1,8 +1,9 @@
-# Fluent Tree Iterator API [Prototype]
+# Fluent Tree Iterator [In Progress]
+## Overview
+[![Build Status](https://travis-ci.org/ifillbrito/trees.svg?branch=master)](https://travis-ci.org/ifillbrito/trees)
+[![codecov](https://codecov.io/gh/ifillbrito/trees/branch/master/graph/badge.svg)](https://codecov.io/gh/ifillbrito/trees)
 
-After the implementation has been done, this project will provide abstract classes that can be easily extended in order to manipulate trees in a functional fashion.
-
-Designed by Eduard Beutel and Grebiel Ifill. The design pattern can be found at https://github.com/eduardbeutel/design-patterns.
+This library provides an abstract class that can be extended to enable declarative manipulation of trees in existing objects.
 
 ## Example:
 The following example shows some of the methods of the API (still in development). The conditions (``forAll``, ``forPath``) and functions (lambdas) used to manipulate the nodes were written arbitrarily, so the semantic described in this example might not make any sense. The goal at the moment is to see how the API looks like.
@@ -117,3 +118,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+---
+Designed by Eduard Beutel and Grebiel Ifill. The design pattern can be found at https://github.com/eduardbeutel/design-patterns.
