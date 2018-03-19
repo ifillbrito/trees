@@ -11,7 +11,7 @@
 
     <name>Tree Iterator</name>
     <description>
-        This library provides an abstract class that can be implemented to enabled declarative manipulation of trees
+        This library provides an abstract class that can be extended to enabled declarative manipulation of trees in existing objects
     </description>
     <url>https://github.com/ifillbrito/trees</url>
 
