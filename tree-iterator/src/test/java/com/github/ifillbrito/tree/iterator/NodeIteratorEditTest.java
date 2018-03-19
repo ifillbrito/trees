@@ -29,7 +29,7 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 4, 40, 44, 48, 52, 80, 84, 88);
+        assertValues(root, 1 * 4, 10 * 4, 11 * 4, 12 * 4, 13 * 4, 20 * 4, 21 * 4, 22 * 4);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 2, 40, 12, 48, 14, 80, 22, 88);
+        assertValues(root, 1 + 1, 10 * 4, 11 + 1, 12 * 4, 13 + 1, 20 * 4, 21 + 1, 22 * 4);
     }
 
     @Test
@@ -73,7 +73,7 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 40, 11, 48, 13, 80, 21, 88);
+        assertValues(root, 1, 10 * 4, 11, 12 * 4, 13, 20 * 4, 21, 22 * 4);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 40, 11, 48, 13, 80, 21, 88);
+        assertValues(root, 1, 10 * 4, 11, 12 * 4, 13, 20 * 4, 21, 22 * 4);
     }
 
     @Test
@@ -118,7 +118,7 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1*4, 10, 11*4, 12*4, 13*4, 20*4, 21*4, 22*4);
+        assertValues(root, 1 * 4, 10, 11 * 4, 12 * 4, 13 * 4, 20 * 4, 21 * 4, 22 * 4);
     }
 
     @Test
@@ -141,7 +141,7 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1*4, 10, 11*4, 12*4, 13*4, 20*4, 21*4, 22*4);
+        assertValues(root, 1 * 4, 10, 11 * 4, 12 * 4, 13 * 4, 20 * 4, 21 * 4, 22 * 4);
     }
 
     @Test
@@ -163,7 +163,7 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1*4, 10, 11, 12, 13, 20*4, 21*4, 22*4);
+        assertValues(root, 1 * 4, 10, 11, 12, 13, 20 * 4, 21 * 4, 22 * 4);
     }
 
     @Test
@@ -238,7 +238,7 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 10, 11, 12, 13, 80, 21, 22);
+        assertValues(root, 1, 10, 11, 12, 13, 20 * 2 * 2, 21, 22);
     }
 
     @Test
@@ -265,7 +265,7 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 2, 10, 11, 12, 13, 80, 21, 22);
+        assertValues(root, 1 * 2, 10, 11, 12, 13, 20 * 2 * 2, 21, 22);
     }
 
     @Test(expected = RuntimeException.class)

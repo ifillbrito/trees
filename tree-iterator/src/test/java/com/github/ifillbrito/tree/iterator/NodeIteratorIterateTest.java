@@ -30,7 +30,7 @@ public class NodeIteratorIterateTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 40, 11, 48, 13, 80, 21, 88);
+        assertValues(root, 1, 10 * 4, 11, 12 * 4, 13, 20 * 4, 21, 22 * 4);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class NodeIteratorIterateTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 40, 11, 48, 13, 20, 21, 88);
+        assertValues(root, 1, 10 * 4, 11, 12 * 4, 13, 20, 21, 22 * 4);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class NodeIteratorIterateTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 10, 11, 12, 13, 80, 21, 22);
+        assertValues(root, 1, 10, 11, 12, 13, 20 * 2 * 2, 21, 22);
     }
 
     @Test
@@ -104,6 +104,6 @@ public class NodeIteratorIterateTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 2, 10, 11, 12, 13, 80, 21, 22);
+        assertValues(root, 1 * 2, 10, 11, 12, 13, 20 * 2 * 2, 21, 22);
     }
 }

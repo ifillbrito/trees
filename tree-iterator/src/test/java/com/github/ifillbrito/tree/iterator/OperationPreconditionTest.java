@@ -26,7 +26,7 @@ public class OperationPreconditionTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 2, 20, 22, 24, 26, 40, 42, 44);
+        assertValues(root, 1 * 2, 10 * 2, 11 * 2, 12 * 2, 13 * 2, 20 * 2, 21 * 2, 22 * 2);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class OperationPreconditionTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 20, 11, 24, 13, 40, 21, 44);
+        assertValues(root, 1, 10 * 2, 11, 12 * 2, 13, 20 * 2, 21, 22 * 2);
     }
 
     @Test
@@ -66,7 +66,7 @@ public class OperationPreconditionTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 10, 22, 24, 26, 20, 21, 22);
+        assertValues(root, 1, 10, 11 * 2, 12 * 2, 13 * 2, 20, 21, 22);
     }
 
     @Test
@@ -86,7 +86,7 @@ public class OperationPreconditionTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 10, 22, 24, 26, 20, 21, 22);
+        assertValues(root, 1, 10, 11 * 2, 12 * 2, 13 * 2, 20, 21, 22);
     }
 
     @Test
@@ -109,7 +109,7 @@ public class OperationPreconditionTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 10, 22, 12, 26, 20, 21, 22);
+        assertValues(root, 1, 10, 11 * 2, 12, 13 * 2, 20, 21, 22);
     }
 
     @Test
@@ -133,7 +133,7 @@ public class OperationPreconditionTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 10, 11, 24, 13, 20, 21, 22);
+        assertValues(root, 1, 10, 11, 12 * 2, 13, 20, 21, 22);
     }
 
     @Test
@@ -154,7 +154,7 @@ public class OperationPreconditionTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 10, 22, 24, 26, 20, 42, 44);
+        assertValues(root, 1, 10, 11 * 2, 12 * 2, 13 * 2, 20, 21 * 2, 22 * 2);
     }
 
     @Test
@@ -181,7 +181,7 @@ public class OperationPreconditionTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 10, 11, 12, 13, 80, 21, 22);
+        assertValues(root, 1, 10, 11, 12, 13, 20 * 2 * 2, 21, 22);
     }
 
     @Test
@@ -208,7 +208,7 @@ public class OperationPreconditionTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 2, 10, 11, 12, 13, 80, 21, 22);
+        assertValues(root, 1 * 2, 10, 11, 12, 13, 20 * 2 * 2, 21, 22);
     }
 
     @Test
@@ -249,6 +249,6 @@ public class OperationPreconditionTest extends AbstractNodeIteratorTest
                     21 ->   TD: do nothing                              BU: parent = parent*2 (parent.value = 80)
                     22 ->   TD: do nothing                              BU: parent = parent*2 (parent.value = 40)
          */
-        assertValues(root, 2, 16, 11, 12, 13, 80, 21, 22);
+        assertValues(root, 1 * 2, 10 + 2 + 2 + 2, 11, 12, 13, 20 * 2 * 2, 21, 22);
     }
 }
