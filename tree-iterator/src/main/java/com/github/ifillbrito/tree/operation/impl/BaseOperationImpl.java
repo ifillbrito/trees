@@ -1,14 +1,11 @@
 package com.github.ifillbrito.tree.operation.impl;
 
-import com.github.ifillbrito.tree.operation.BaseOperation;
-import com.github.ifillbrito.tree.operation.Operation;
-import com.github.ifillbrito.tree.operation.OperationDataHolder;
-import com.github.ifillbrito.tree.operation.OperationPrecondition;
+import com.github.ifillbrito.tree.operation.*;
 
 /**
  * Created by gjib on 09.03.18.
  */
-public class BaseOperationImpl<Precondition extends OperationPrecondition, OperationType extends BaseOperation> implements BaseOperation<Precondition, OperationType>
+public class BaseOperationImpl<Precondition extends OperationPrecondition, Op extends BaseOperation> implements BaseOperation<Precondition, Op>
 {
     protected final OperationDataHolder operationDataHolder;
     protected final OperationPrecondition precondition;
@@ -36,36 +33,41 @@ public class BaseOperationImpl<Precondition extends OperationPrecondition, Opera
     @Override
     public Precondition skip()
     {
-        return null;
+        operationDataHolder.setOperation(Operation.SKIP);
+        return (Precondition) precondition;
     }
 
     @Override
-    public OperationType take(int maxCount)
+    public Op take(int maxCount)
     {
-        return null;
+        operationDataHolder.setOperation(Operation.TAKE);
+        return (Op) this;
     }
 
     @Override
-    public OperationType take(int occurrenceFrom, int occurrenceTo)
+    public Op take(int occurrenceFrom, int occurrenceTo)
     {
-        return null;
+        operationDataHolder.setOperation(Operation.TAKE);
+        return (Op) this;
     }
 
     @Override
-    public OperationType takeLast()
+    public Op takeLast()
     {
-        return null;
+        return takeLast(1);
     }
 
     @Override
-    public OperationType takeLast(int maxCount)
+    public Op takeLast(int maxCount)
     {
-        return null;
+        operationDataHolder.setExecutionMode(ExecutionMode.BOTTOM_UP);
+        operationDataHolder.setOperation(Operation.TAKE);
+        return (Op) this;
     }
 
     @Override
-    public OperationType takeOccurrence(int occurrence)
+    public Op takeOccurrence(int occurrence)
     {
-        return null;
+        return take(occurrence, occurrence);
     }
 }

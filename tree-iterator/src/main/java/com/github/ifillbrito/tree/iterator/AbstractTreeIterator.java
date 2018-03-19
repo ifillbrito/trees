@@ -400,7 +400,6 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
             OperationDataHolder operationDataHolder = this.operationDataHolders.get(i);
             boolean operationMatches = operationDataHolder.getOperation().equals(operation);
             boolean scopeMatches = operationDataHolder.getScope().equals(currentOperationDataHolder.getScope());
-            // if not in scope, check the global scope
             boolean globalScopeMatches = operationDataHolder.getScope().equals(OperationType.ITERATE.getScopePrefix() + "0");
             scopeMatches = scopeMatches || globalScopeMatches;
             if ( !operationFound && operationMatches && scopeMatches )

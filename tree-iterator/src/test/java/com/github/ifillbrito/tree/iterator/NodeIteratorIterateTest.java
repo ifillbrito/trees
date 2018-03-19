@@ -45,6 +45,8 @@ public class NodeIteratorIterateTest extends AbstractNodeIteratorTest
                 .iterate()
                     .forAll(node -> !node.isEven())
                     .ignore()
+                    .forAll(node -> node.getValue().equals(20))
+                    .ignore()
                     .end()
                 .edit()
                     .forAll()
@@ -54,7 +56,7 @@ public class NodeIteratorIterateTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 40, 11, 48, 13, 80, 21, 88);
+        assertValues(root, 1, 40, 11, 48, 13, 20, 21, 88);
     }
 
     @Test

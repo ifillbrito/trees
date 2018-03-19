@@ -28,6 +28,11 @@ public class OperationDataHolder
     // replace operation data
     private Function replaceFunction;
 
+    // take operation data
+    private int takeMaxCount;
+    private int takeOccurrenceFrom;
+    private int takeOccurrenceTo;
+
     // precondition data
     private Class classType;
     private boolean parentResolutionEnabledForPrecondition = false;
@@ -109,11 +114,6 @@ public class OperationDataHolder
         this.operationType = operationType;
     }
 
-    public OperationPreconditionType getPreconditionType()
-    {
-        return preconditionType;
-    }
-
     public void setPreconditionType(OperationPreconditionType preconditionType)
     {
         this.preconditionType = preconditionType;
@@ -164,19 +164,9 @@ public class OperationDataHolder
         this.classType = classType;
     }
 
-    public String getPathRegex()
-    {
-        return pathRegex;
-    }
-
     public void setPathRegex(String pathRegex)
     {
         this.pathRegex = pathRegex;
-    }
-
-    public Predicate<String> getPathPredicate()
-    {
-        return pathPredicate;
     }
 
     public void setPathPredicate(Predicate<String> pathPredicate)
@@ -184,19 +174,9 @@ public class OperationDataHolder
         this.pathPredicate = pathPredicate;
     }
 
-    public BiPredicate getNodeAndPathPredicate()
-    {
-        return nodeAndPathPredicate;
-    }
-
     public void setNodeAndPathPredicate(BiPredicate nodeAndPathPredicate)
     {
         this.nodeAndPathPredicate = nodeAndPathPredicate;
-    }
-
-    public TriPredicate getParentAndNodeAndPathPredicate()
-    {
-        return parentAndNodeAndPathPredicate;
     }
 
     public void setParentAndNodeAndPathPredicate(TriPredicate parentAndNodeAndPathPredicate)
