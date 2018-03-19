@@ -126,7 +126,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     @Override
     public void execute()
     {
-        executeOperationDataHoldersPreprocessing();
+        preProcessOperationDataHolders();
         List<Node> rootNode = new ArrayList<>(Collections.singletonList(node));
         executeRecursive(null, rootNode);
         operationDataHolders.clear();
@@ -369,49 +369,17 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
                 && isTreeSkipped(parent, object, operationDataHolder);
     }
 
-    private void executeOperationDataHoldersPreprocessing()
+    private void preProcessOperationDataHolders()
     {
+        List<OperationDataHolder> iterateOperationDataHolders = extractIterateOperationDataHolders(operationDataHolders);
+        copyIterateOperationDataHoldersInEachScope(iterateOperationDataHolders, operationDataHolders);
+
         Map<String, ExecutionMode> executionModeMap = new HashMap<>();
-
-        List<OperationDataHolder> iterateOperationDataHolders = new ArrayList<>();
         for ( OperationDataHolder operationDataHolder : operationDataHolders )
         {
-            if ( OperationType.ITERATE.equals(operationDataHolder.getOperationType()) )
-            {
-                iterateOperationDataHolders.add(operationDataHolder);
-            }
-        }
-
-        String previousScope = "";
-        ListIterator<OperationDataHolder> iterator = operationDataHolders.listIterator();
-        while ( iterator.hasNext() )
-        {
-            OperationDataHolder operationDataHolder = iterator.next();
-            if ( !previousScope.equals(operationDataHolder.getScope()) )
-            {
-                iterator.remove();
-                for ( OperationDataHolder iterateOperationDataHolder : iterateOperationDataHolders )
-                {
-                    OperationDataHolder clonedOperationDataHolder = new OperationDataHolder(iterateOperationDataHolder);
-                    clonedOperationDataHolder.setScope(operationDataHolder.getScope());
-                    clonedOperationDataHolder.setOperationType(operationDataHolder.getOperationType());
-                    iterator.add(clonedOperationDataHolder);
-                }
-                iterator.add(operationDataHolder);
-            }
-            previousScope = operationDataHolder.getScope();
-        }
-
-        for ( OperationDataHolder operationDataHolder : operationDataHolders )
-        {
-            if ( OperationType.ITERATE.equals(operationDataHolder.getOperationType()) )
-            {
-                // ignore iterate operations because these are copied to all edit and collect operations
-                continue;
-            }
-
             if ( Operation.REPLACE.equals(operationDataHolder.getOperation()) )
             {
+                // important to know whether the children must be cloned or not
                 replaceOperationUsed = true;
             }
 
@@ -433,6 +401,46 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
         }
     }
 
+    private List<OperationDataHolder> extractIterateOperationDataHolders(List<OperationDataHolder> operationDataHolders)
+    {
+        List<OperationDataHolder> iterateOperationDataHolders = new ArrayList<>();
+        for ( OperationDataHolder operationDataHolder : operationDataHolders )
+        {
+            if ( OperationType.ITERATE.equals(operationDataHolder.getOperationType()) )
+            {
+                iterateOperationDataHolders.add(operationDataHolder);
+            }
+        }
+        operationDataHolders.removeAll(iterateOperationDataHolders);
+        return iterateOperationDataHolders;
+    }
+
+    private void copyIterateOperationDataHoldersInEachScope(
+            List<OperationDataHolder> iterateOperationDataHolders,
+            List<OperationDataHolder> operationDataHolders
+    )
+    {
+        String previousScope = "";
+        ListIterator<OperationDataHolder> iterator = operationDataHolders.listIterator();
+        while ( iterator.hasNext() )
+        {
+            OperationDataHolder operationDataHolder = iterator.next();
+            if ( !previousScope.equals(operationDataHolder.getScope()) )
+            {
+                iterator.remove();
+                for ( OperationDataHolder iterateOperationDataHolder : iterateOperationDataHolders )
+                {
+                    OperationDataHolder clonedOperationDataHolder = new OperationDataHolder(iterateOperationDataHolder);
+                    clonedOperationDataHolder.setScope(operationDataHolder.getScope());
+                    clonedOperationDataHolder.setOperationType(operationDataHolder.getOperationType());
+                    iterator.add(clonedOperationDataHolder);
+                }
+                iterator.add(operationDataHolder);
+            }
+            previousScope = operationDataHolder.getScope();
+        }
+    }
+
     private boolean isItemFiltered(Object parent, Object object, OperationDataHolder operationDataHolder)
     {
         return isRegisteredBeforeCurrentOperation(Operation.FILTER, parent, object, operationDataHolder, true);
@@ -448,7 +456,13 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
         return isRegisteredBeforeCurrentOperation(Operation.SKIP, parent, object, operationDataHolder, false);
     }
 
-    private boolean isRegisteredBeforeCurrentOperation(Operation operation, Object parent, Object object, OperationDataHolder currentOperationDataHolder, boolean defaultValue)
+    private boolean isRegisteredBeforeCurrentOperation(
+            Operation operation,
+            Object parent,
+            Object object,
+            OperationDataHolder currentOperationDataHolder,
+            boolean defaultValue
+    )
     {
         boolean operationFound = false;
         for ( int i = operationDataHolders.indexOf(currentOperationDataHolder); i >= 0; i-- )
