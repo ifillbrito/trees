@@ -17,9 +17,5 @@ public interface BaseOperation<Precondition extends OperationPrecondition, Opera
 
     Operation take(int occurrenceFrom, int occurrenceTo);
 
-    Operation takeLast();
-
-    Operation takeLast(int maxCount);
-
     Operation takeOccurrence(int occurrence);
 }

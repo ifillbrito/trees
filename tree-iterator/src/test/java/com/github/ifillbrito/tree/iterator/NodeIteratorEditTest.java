@@ -190,6 +190,69 @@ public class NodeIteratorEditTest extends AbstractNodeIteratorTest
     }
 
     @Test
+    public void take_maxCount()
+    {
+        // -- given
+        Node root = createTree();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .edit()
+                    .forAll()
+                    .take(4)
+                    .apply(node -> node.setValue( x -> x * 4 ))
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertValues(root, 1 * 4, 10 * 4, 11 * 4, 12 * 4, 13, 20, 21, 22);
+    }
+
+    @Test
+    public void take_occurrenceFromTo()
+    {
+        // -- given
+        Node root = createTree();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .edit()
+                    .forAll()
+                    .take(4, 6)
+                    .apply(node -> node.setValue( x -> x * 4 ))
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertValues(root, 1, 10, 11, 12 * 4, 13 * 4, 20 * 4, 21, 22);
+    }
+
+    @Test
+    public void takeOccurrence()
+    {
+        // -- given
+        Node root = createTree();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .edit()
+                    .forAll()
+                    .takeOccurrence(4)
+                    .apply(node -> node.setValue( x -> x * 4 ))
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertValues(root, 1, 10, 11, 12 * 4, 13, 20, 21, 22);
+    }
+
+    @Test
     public void replace()
     {
         // -- given

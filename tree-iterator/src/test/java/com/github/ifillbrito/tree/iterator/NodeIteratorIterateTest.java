@@ -86,6 +86,31 @@ public class NodeIteratorIterateTest extends AbstractNodeIteratorTest
     }
 
     @Test
+    public void iterate_take()
+    {
+        // -- given
+        Node root = createTree();
+
+        // -- when
+        //@formatter:off
+        new NodeIterator(root)
+                .iterate()
+                    .forAll(Node::isEven)
+                    .take(4)
+                    .filter()
+                    .end()
+                .edit()
+                    .forAll()
+                    .apply(node -> node.setValue( x -> x * 4 ))
+                    .end()
+                .execute();
+        //@formatter:on
+
+        // -- then
+        assertValues(root, 1, 10 * 4, 11, 12 * 4, 13, 20, 21, 22);
+    }
+
+    @Test
     public void iterate_topDownExecution()
     {
         // -- given

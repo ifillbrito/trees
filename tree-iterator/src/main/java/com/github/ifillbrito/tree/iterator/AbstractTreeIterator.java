@@ -19,11 +19,10 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     protected static final String EMPTY_PATH = "";
     private Node node;
     private int editScopeCounter, collectScopeCounter = 0;
-    private LinkedList<OperationDataHolder> operationDataHolders = new LinkedList<>();
-    private LinkedList<OperationDataHolder> topDownOperationDataHolders = new LinkedList<>();
-    private LinkedList<OperationDataHolder> bottomUpOperationDataHolders = new LinkedList<>();
+    private List<OperationDataHolder> operationDataHolders = new ArrayList<>();
+    private List<OperationDataHolder> topDownOperationDataHolders = new ArrayList<>();
+    private List<OperationDataHolder> bottomUpOperationDataHolders = new ArrayList<>();
     private Map<Node, NodeWrapper<Node>> nodeWrapperMap = new HashMap<>();
-    private ExecutionMode executionMode;
 
     // data holders
     private String currentPath = EMPTY_PATH;
@@ -42,7 +41,6 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
         TreeNodeUtils.verifyNotNull(node);
         this.node = node;
         this.classType = node.getClass();
-        this.executionMode = DEFAULT_EXECUTION_MODE;
     }
 
 
@@ -196,6 +194,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
         boolean skipTree = false;
         for ( OperationDataHolder operationDataHolder : operationDataHolderByExecutionMode )
         {
+            operationDataHolder.increaseTakeCounter();
             if ( isTreeNodeWrapperSkipped(wrapper, operationDataHolder) ||
                     isTreeNodeSkipped(parent, object, operationDataHolder) )
             {
@@ -373,25 +372,53 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
     private void executeOperationDataHoldersPreprocessing()
     {
         Map<String, ExecutionMode> executionModeMap = new HashMap<>();
+
+        List<OperationDataHolder> iterateOperationDataHolders = new ArrayList<>();
         for ( OperationDataHolder operationDataHolder : operationDataHolders )
         {
+            if ( OperationType.ITERATE.equals(operationDataHolder.getOperationType()) )
+            {
+                iterateOperationDataHolders.add(operationDataHolder);
+            }
+        }
+
+        String previousScope = "";
+        ListIterator<OperationDataHolder> iterator = operationDataHolders.listIterator();
+        while ( iterator.hasNext() )
+        {
+            OperationDataHolder operationDataHolder = iterator.next();
+            if ( !previousScope.equals(operationDataHolder.getScope()) )
+            {
+                iterator.remove();
+                for ( OperationDataHolder iterateOperationDataHolder : iterateOperationDataHolders )
+                {
+                    OperationDataHolder clonedOperationDataHolder = new OperationDataHolder(iterateOperationDataHolder);
+                    clonedOperationDataHolder.setScope(operationDataHolder.getScope());
+                    clonedOperationDataHolder.setOperationType(operationDataHolder.getOperationType());
+                    iterator.add(clonedOperationDataHolder);
+                }
+                iterator.add(operationDataHolder);
+            }
+            previousScope = operationDataHolder.getScope();
+        }
+
+        for ( OperationDataHolder operationDataHolder : operationDataHolders )
+        {
+            if ( OperationType.ITERATE.equals(operationDataHolder.getOperationType()) )
+            {
+                // ignore iterate operations because these are copied to all edit and collect operations
+                continue;
+            }
+
             if ( Operation.REPLACE.equals(operationDataHolder.getOperation()) )
             {
                 replaceOperationUsed = true;
             }
 
-            if ( OperationType.ITERATE.equals(operationDataHolder.getOperationType()) )
-            {
-                if ( operationDataHolder.getExecutionMode() != null )
-                {
-                    this.executionMode = operationDataHolder.getExecutionMode();
-                }
-            }
-
-            ExecutionMode executionMode = operationDataHolder.getByScope(
+            ExecutionMode executionMode = operationDataHolder.getByScopeFromObjectOrMapOtherwiseDefault(
                     OperationDataHolder::getExecutionMode,
-                    this.executionMode,
-                    executionModeMap
+                    executionModeMap,
+                    DEFAULT_EXECUTION_MODE
             );
 
             switch ( executionMode )
@@ -429,8 +456,6 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
             OperationDataHolder operationDataHolder = this.operationDataHolders.get(i);
             boolean operationMatches = operationDataHolder.getOperation().equals(operation);
             boolean scopeMatches = operationDataHolder.getScope().equals(currentOperationDataHolder.getScope());
-            boolean globalScopeMatches = operationDataHolder.getScope().equals(OperationType.ITERATE.getScopePrefix() + "0");
-            scopeMatches = scopeMatches || globalScopeMatches;
             if ( !operationFound && operationMatches && scopeMatches )
             {
                 operationFound = true;

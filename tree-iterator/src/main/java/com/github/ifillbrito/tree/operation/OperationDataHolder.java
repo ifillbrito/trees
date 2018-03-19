@@ -29,9 +29,10 @@ public class OperationDataHolder
     private Function replaceFunction;
 
     // take operation data
-    private int takeMaxCount;
-    private int takeOccurrenceFrom;
-    private int takeOccurrenceTo;
+    private Integer takeCounter;
+    private Integer takeMaxCount;
+    private Integer takeOccurrenceFrom;
+    private Integer takeOccurrenceTo;
 
     // precondition data
     private Class classType;
@@ -52,6 +53,7 @@ public class OperationDataHolder
         this.operation = other.operation;
         this.consumer = other.consumer;
         this.replaceFunction = other.replaceFunction;
+        this.takeCounter = other.takeCounter;
         this.takeMaxCount = other.takeMaxCount;
         this.takeOccurrenceFrom = other.takeOccurrenceFrom;
         this.takeOccurrenceTo = other.takeOccurrenceTo;
@@ -74,7 +76,7 @@ public class OperationDataHolder
         this.setClassType(classType);
     }
 
-    public <Target> Target getByScope(Function<OperationDataHolder, Target> getter, Target defaultValue, Map<String, Target> targetPropertyMap)
+    public <Target> Target getByScopeFromObjectOrMapOtherwiseDefault(Function<OperationDataHolder, Target> getter, Map<String, Target> targetPropertyMap, Target defaultValue)
     {
         String scope = this.getScope();
         Target targetProperty = getter.apply(this);
@@ -193,6 +195,30 @@ public class OperationDataHolder
         this.classType = NodeWrapper.class;
     }
 
+    public void initializeTakeCounter()
+    {
+        this.takeCounter = 0;
+        this.takeMaxCount = 0;
+        this.takeOccurrenceFrom = 0;
+        this.takeOccurrenceTo = 0;
+    }
+
+    public void increaseTakeCounter()
+    {
+        if ( takeCounter != null )
+        {
+            this.takeCounter++;
+        }
+    }
+
+    public void copyTakeDataFrom(OperationDataHolder other)
+    {
+        other.takeCounter = this.takeCounter;
+        other.takeOccurrenceTo = this.takeOccurrenceTo;
+        other.takeOccurrenceFrom = this.takeOccurrenceFrom;
+        other.takeMaxCount = this.takeMaxCount;
+    }
+
     public boolean isParentResolutionEnabledForPrecondition()
     {
         return parentResolutionEnabledForPrecondition;
@@ -218,55 +244,53 @@ public class OperationDataHolder
         this.executionMode = executionMode;
     }
 
+    public void setTakeMaxCount(Integer takeMaxCount)
+    {
+        this.takeMaxCount = takeMaxCount;
+    }
+
+    public void setTakeOccurrences(Integer takeOccurrenceFrom, Integer takeOccurrenceTo)
+    {
+        this.takeOccurrenceFrom = takeOccurrenceFrom;
+        this.takeOccurrenceTo = takeOccurrenceTo;
+    }
+
     public boolean testPrecondition(Object parent, Object object, String path)
     {
+        if ( !isTargetClass(object) || !isTargetObject() ) return false;
+
         switch ( preconditionType )
         {
             case FOR_ALL:
-                return testNodePredicate(object);
+                return this.getNodePredicate().test(object);
             case FOR_ALL_BI_PREDICATE:
-                return testNodeAndPathPredicate(object, path);
+                return nodeAndPathPredicate.test(object, path);
             case FOR_ALL_TRI_PREDICATE:
-                return testParentAndNodeAndPathPredicate(parent, object, path);
+                return isTargetClass(parent) && parentAndNodeAndPathPredicate.test(parent, object, path);
             case FOR_ALL_PATH_REGEX:
-                return testPathRegex(object, path);
+                return path.matches(pathRegex);
             case FOR_ALL_PATH_PREDICATE:
-                return testPathPredicate(object, path);
+                return pathPredicate.test(path);
             default:
                 return false;
         }
     }
 
-    private boolean testNodePredicate(Object object)
-    {
-        return isTargetClass(object) && this.getNodePredicate().test(object);
-    }
-
-    private boolean testPathRegex(Object object, String path)
-    {
-        return isTargetClass(object) && path.matches(pathRegex);
-    }
-
-    private boolean testPathPredicate(Object object, String path)
-    {
-        return isTargetClass(object) && pathPredicate.test(path);
-    }
-
-    private boolean testNodeAndPathPredicate(Object object, String path)
-    {
-        return isTargetClass(object) && nodeAndPathPredicate.test(object, path);
-    }
-
-    private boolean testParentAndNodeAndPathPredicate(Object parent, Object object, String path)
-    {
-        return isTargetClass(object) && isTargetClass(parent)
-                && parentAndNodeAndPathPredicate.test(parent, object, path);
-    }
-
     private boolean isTargetClass(Object object)
     {
-        if ( object == null ) return false;
-        return this.getClassType().isAssignableFrom(object.getClass());
+        return object != null && this.getClassType().isAssignableFrom(object.getClass());
+    }
+
+    private boolean isTargetObject()
+    {
+        if ( takeCounter != null )
+        {
+//            takeCounter++;
+            return takeMaxCount >= takeCounter
+                    || (takeOccurrenceFrom <= takeCounter && takeCounter <= takeOccurrenceTo);
+        }
+        // no counter defined -> take all
+        return true;
     }
 
     private Class getClassType()

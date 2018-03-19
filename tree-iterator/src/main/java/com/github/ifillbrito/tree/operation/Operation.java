@@ -10,6 +10,5 @@ public enum Operation
     REMOVE,
     IGNORE,
     FILTER,
-    TAKE,
     SKIP
 }

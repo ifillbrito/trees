@@ -1,6 +1,9 @@
 package com.github.ifillbrito.tree.operation.impl;
 
-import com.github.ifillbrito.tree.operation.*;
+import com.github.ifillbrito.tree.operation.BaseOperation;
+import com.github.ifillbrito.tree.operation.Operation;
+import com.github.ifillbrito.tree.operation.OperationDataHolder;
+import com.github.ifillbrito.tree.operation.OperationPrecondition;
 
 /**
  * Created by gjib on 09.03.18.
@@ -40,28 +43,16 @@ public class BaseOperationImpl<Precondition extends OperationPrecondition, Op ex
     @Override
     public Op take(int maxCount)
     {
-        operationDataHolder.setOperation(Operation.TAKE);
+        operationDataHolder.initializeTakeCounter();
+        operationDataHolder.setTakeMaxCount(maxCount);
         return (Op) this;
     }
 
     @Override
     public Op take(int occurrenceFrom, int occurrenceTo)
     {
-        operationDataHolder.setOperation(Operation.TAKE);
-        return (Op) this;
-    }
-
-    @Override
-    public Op takeLast()
-    {
-        return takeLast(1);
-    }
-
-    @Override
-    public Op takeLast(int maxCount)
-    {
-        operationDataHolder.setExecutionMode(ExecutionMode.BOTTOM_UP);
-        operationDataHolder.setOperation(Operation.TAKE);
+        operationDataHolder.initializeTakeCounter();
+        operationDataHolder.setTakeOccurrences(occurrenceFrom, occurrenceTo);
         return (Op) this;
     }
 
