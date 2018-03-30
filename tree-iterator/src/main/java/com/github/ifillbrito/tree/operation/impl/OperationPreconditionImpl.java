@@ -114,7 +114,7 @@ public class OperationPreconditionImpl<Node, Op extends BaseOperation, Precondit
 
     private void setDefaultOperationForExecutionMode(OperationDataHolder operation)
     {
-        operation.setNodePredicate(node -> true);
-        operation.setOperation(Operation.FILTER);
+        operation.setNodePredicate(node -> false);
+        operation.setOperation(Operation.IGNORE);
     }
 }

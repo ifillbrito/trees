@@ -194,12 +194,6 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
         boolean skipTree = false;
         for ( OperationDataHolder operationDataHolder : operationDataHolderByExecutionMode )
         {
-            if ( !isNodeWrapperFiltered(wrapper, operationDataHolder) &&
-                    !isNodeFiltered(parent, object, operationDataHolder) )
-            {
-                continue;
-            }
-
             operationDataHolder.increaseTakeCounter();
 
             if ( isTreeNodeWrapperSkipped(wrapper, operationDataHolder) ||
@@ -359,20 +353,10 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
 
     private boolean isTargetNodeInternal(Object parent, Object object, String currentPath, OperationDataHolder operationDataHolder)
     {
-        return operationDataHolder.testPrecondition(parent, object, currentPath)
-                && !isItemIgnored(parent, object, operationDataHolder);
-    }
-
-    private boolean isNodeWrapperFiltered(NodeWrapper<Node> wrapper, OperationDataHolder operationDataHolder)
-    {
-        return operationDataHolder.isParentResolutionEnabledForPrecondition()
-                && isItemFiltered(wrapper.getParent(), wrapper, operationDataHolder);
-    }
-
-    private boolean isNodeFiltered(Node parent, Node object, OperationDataHolder operationDataHolder)
-    {
-        return !operationDataHolder.isParentResolutionEnabledForPrecondition()
-                && isItemFiltered(parent, object, operationDataHolder);
+        return operationDataHolder.getOperation().equals(Operation.IGNORE) ?
+                !operationDataHolder.testPrecondition(parent, object, currentPath) :
+                operationDataHolder.testPrecondition(parent, object, currentPath)
+                        && !isItemIgnored(parent, object, operationDataHolder);
     }
 
     private boolean isTreeNodeWrapperSkipped(NodeWrapper<Node> wrapper, OperationDataHolder operationDataHolder)
@@ -459,27 +443,21 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
         }
     }
 
-    private boolean isItemFiltered(Object parent, Object object, OperationDataHolder operationDataHolder)
-    {
-        return isRegisteredBeforeCurrentOperation(Operation.FILTER, parent, object, operationDataHolder, true);
-    }
-
     private boolean isItemIgnored(Object parent, Object object, OperationDataHolder operationDataHolder)
     {
-        return isRegisteredBeforeCurrentOperation(Operation.IGNORE, parent, object, operationDataHolder, false);
+        return isRegisteredBeforeCurrentOperation(Operation.IGNORE, parent, object, operationDataHolder);
     }
 
     private boolean isTreeSkipped(Object parent, Object object, OperationDataHolder operationDataHolder)
     {
-        return isRegisteredBeforeCurrentOperation(Operation.SKIP, parent, object, operationDataHolder, false);
+        return isRegisteredBeforeCurrentOperation(Operation.SKIP, parent, object, operationDataHolder);
     }
 
     private boolean isRegisteredBeforeCurrentOperation(
             Operation operation,
             Object parent,
             Object object,
-            OperationDataHolder currentOperationDataHolder,
-            boolean defaultValue
+            OperationDataHolder currentOperationDataHolder
     )
     {
         boolean operationFound = false;
@@ -497,7 +475,7 @@ public abstract class AbstractTreeIterator<Node> implements TreeIterator<Node>
                 return true;
             }
         }
-        return !operationFound && defaultValue;
+        return false;
     }
 
 }

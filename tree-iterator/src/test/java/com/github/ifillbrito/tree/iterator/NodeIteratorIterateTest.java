@@ -96,7 +96,7 @@ public class NodeIteratorIterateTest extends AbstractNodeIteratorTest
         new NodeIterator(root)
                 .iterate()
                     .forAll(Node::isEven)
-                    .take(2)
+                    .take(4)
                     .filter()
                     .end()
                 .edit()
@@ -107,7 +107,7 @@ public class NodeIteratorIterateTest extends AbstractNodeIteratorTest
         //@formatter:on
 
         // -- then
-        assertValues(root, 1, 10 * 4, 11, 12 * 4, 13, 20, 21, 22);
+        assertValues(root, 1, 10 * 4, 11, 12 * 4, 13 * 4, 20 * 4, 21 * 4, 22 * 4);
     }
 
     @Test

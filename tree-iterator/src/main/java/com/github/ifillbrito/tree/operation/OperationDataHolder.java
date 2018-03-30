@@ -44,6 +44,7 @@ public class OperationDataHolder
     private Predicate nodePredicate;
     private BiPredicate nodeAndPathPredicate;
     private TriPredicate parentAndNodeAndPathPredicate;
+    private boolean negatePredicates = false;
 
     public OperationDataHolder(OperationDataHolder other)
     {
@@ -66,6 +67,7 @@ public class OperationDataHolder
         this.nodePredicate = other.nodePredicate;
         this.nodeAndPathPredicate = other.nodeAndPathPredicate;
         this.parentAndNodeAndPathPredicate = other.parentAndNodeAndPathPredicate;
+        this.negatePredicates = other.negatePredicates;
     }
 
     public OperationDataHolder(OperationType operationType, int scopeCounter, Class classType)
@@ -124,11 +126,6 @@ public class OperationDataHolder
         this.preconditionType = preconditionType;
     }
 
-    public Predicate getNodePredicate()
-    {
-        return nodePredicate;
-    }
-
     public void setNodePredicate(Predicate nodePredicate)
     {
         this.nodePredicate = nodePredicate;
@@ -172,6 +169,7 @@ public class OperationDataHolder
     public void setPathRegex(String pathRegex)
     {
         this.pathRegex = pathRegex;
+        this.pathPredicate = path -> path.matches(pathRegex);
     }
 
     public void setPathPredicate(Predicate<String> pathPredicate)
@@ -187,6 +185,11 @@ public class OperationDataHolder
     public void setParentAndNodeAndPathPredicate(TriPredicate parentAndNodeAndPathPredicate)
     {
         this.parentAndNodeAndPathPredicate = parentAndNodeAndPathPredicate;
+    }
+
+    public void setNegatePredicates(boolean negatePredicates)
+    {
+        this.negatePredicates = negatePredicates;
     }
 
     public void enableParentResolution()
@@ -209,14 +212,6 @@ public class OperationDataHolder
         {
             this.takeCounter++;
         }
-    }
-
-    public void copyTakeDataFrom(OperationDataHolder other)
-    {
-        other.takeCounter = this.takeCounter;
-        other.takeOccurrenceTo = this.takeOccurrenceTo;
-        other.takeOccurrenceFrom = this.takeOccurrenceFrom;
-        other.takeMaxCount = this.takeMaxCount;
     }
 
     public boolean isParentResolutionEnabledForPrecondition()
@@ -255,6 +250,30 @@ public class OperationDataHolder
         this.takeOccurrenceTo = takeOccurrenceTo;
     }
 
+    public Predicate<String> getPathPredicate()
+    {
+        if ( negatePredicates ) return pathPredicate.negate();
+        return pathPredicate;
+    }
+
+    public Predicate getNodePredicate()
+    {
+        if ( negatePredicates ) return nodePredicate.negate();
+        return nodePredicate;
+    }
+
+    public BiPredicate getNodeAndPathPredicate()
+    {
+        if ( negatePredicates ) return nodeAndPathPredicate.negate();
+        return nodeAndPathPredicate;
+    }
+
+    public TriPredicate getParentAndNodeAndPathPredicate()
+    {
+        if ( negatePredicates ) return parentAndNodeAndPathPredicate.negate();
+        return parentAndNodeAndPathPredicate;
+    }
+
     public boolean testPrecondition(Object parent, Object object, String path)
     {
         if ( !isTargetClass(object) || !isTargetObject() ) return false;
@@ -262,15 +281,14 @@ public class OperationDataHolder
         switch ( preconditionType )
         {
             case FOR_ALL:
-                return this.getNodePredicate().test(object);
+                return getNodePredicate().test(object);
             case FOR_ALL_BI_PREDICATE:
-                return nodeAndPathPredicate.test(object, path);
+                return getNodeAndPathPredicate().test(object, path);
             case FOR_ALL_TRI_PREDICATE:
-                return isTargetClass(parent) && parentAndNodeAndPathPredicate.test(parent, object, path);
+                return isTargetClass(parent) && getParentAndNodeAndPathPredicate().test(parent, object, path);
             case FOR_ALL_PATH_REGEX:
-                return path.matches(pathRegex);
             case FOR_ALL_PATH_PREDICATE:
-                return pathPredicate.test(path);
+                return getPathPredicate().test(path);
             default:
                 return false;
         }

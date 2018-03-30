@@ -9,6 +9,5 @@ public enum Operation
     REPLACE,
     REMOVE,
     IGNORE,
-    FILTER,
     SKIP
 }

@@ -29,7 +29,8 @@ public class BaseOperationImpl<Precondition extends OperationPrecondition, Op ex
     @Override
     public Precondition filter()
     {
-        operationDataHolder.setOperation(Operation.FILTER);
+        operationDataHolder.setOperation(Operation.IGNORE);
+        operationDataHolder.setNegatePredicates(true);
         return (Precondition) precondition;
     }
 
