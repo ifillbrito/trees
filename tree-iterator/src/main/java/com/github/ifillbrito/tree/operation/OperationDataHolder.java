@@ -30,7 +30,6 @@ public class OperationDataHolder
 
     // take operation data
     private Integer takeCounter;
-    private Integer takeMaxCount;
     private Integer takeOccurrenceFrom;
     private Integer takeOccurrenceTo;
 
@@ -55,7 +54,6 @@ public class OperationDataHolder
         this.consumer = other.consumer;
         this.replaceFunction = other.replaceFunction;
         this.takeCounter = other.takeCounter;
-        this.takeMaxCount = other.takeMaxCount;
         this.takeOccurrenceFrom = other.takeOccurrenceFrom;
         this.takeOccurrenceTo = other.takeOccurrenceTo;
         this.classType = other.classType;
@@ -201,7 +199,6 @@ public class OperationDataHolder
     public void initializeTakeCounter()
     {
         this.takeCounter = 0;
-        this.takeMaxCount = 0;
         this.takeOccurrenceFrom = 0;
         this.takeOccurrenceTo = 0;
     }
@@ -237,11 +234,6 @@ public class OperationDataHolder
     public void setExecutionMode(ExecutionMode executionMode)
     {
         this.executionMode = executionMode;
-    }
-
-    public void setTakeMaxCount(Integer takeMaxCount)
-    {
-        this.takeMaxCount = takeMaxCount;
     }
 
     public void setTakeOccurrences(Integer takeOccurrenceFrom, Integer takeOccurrenceTo)
@@ -303,8 +295,7 @@ public class OperationDataHolder
     {
         if ( takeCounter != null )
         {
-            return takeMaxCount >= takeCounter
-                    || (takeOccurrenceFrom <= takeCounter && takeCounter <= takeOccurrenceTo);
+            return takeOccurrenceFrom <= takeCounter && takeCounter <= takeOccurrenceTo;
         }
         // no counter defined -> take all
         return true;

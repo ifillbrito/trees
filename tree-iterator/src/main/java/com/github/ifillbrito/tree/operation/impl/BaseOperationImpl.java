@@ -44,9 +44,7 @@ public class BaseOperationImpl<Precondition extends OperationPrecondition, Op ex
     @Override
     public Op take(int maxCount)
     {
-        operationDataHolder.initializeTakeCounter();
-        operationDataHolder.setTakeMaxCount(maxCount);
-        return (Op) this;
+        return take(1, maxCount);
     }
 
     @Override
