@@ -1,4 +1,4 @@
-# Fluent Tree Iterator [In Progress]
+# Fluent Tree Iterator [On Hold]
 ## Overview
 [![Build Status](https://travis-ci.org/ifillbrito/trees.svg?branch=master)](https://travis-ci.org/ifillbrito/trees)
 [![codecov](https://codecov.io/gh/ifillbrito/trees/branch/master/graph/badge.svg)](https://codecov.io/gh/ifillbrito/trees)
